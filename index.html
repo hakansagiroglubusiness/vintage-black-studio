@@ -190,9 +190,7 @@ section{position:relative}
   .foot{grid-template-columns:1fr;}.foot div:last-child{justify-content:flex-start}
 }
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{transition:none!important;animation:none!important}
-  .ln>span,.fade,.strip .im,.gal__grid .im{transform:none!important;opacity:1!important}
-  .about__img,.arch{--rev:0%!important}
+  .slides>div{transform:none!important;transition:opacity 1.4s ease!important}
   html{scroll-behavior:auto}
 }
 </style>
@@ -318,8 +316,7 @@ section{position:relative}
 
   // 4 — hero crossfade
   var sl=$$('#slides>div'),si=0;
-  if(!matchMedia('(prefers-reduced-motion:reduce)').matches)
-    setInterval(function(){sl[si].classList.remove('on');si=(si+1)%sl.length;sl[si].classList.add('on')},2600);
+  setInterval(function(){sl[si].classList.remove('on');si=(si+1)%sl.length;sl[si].classList.add('on')},2600);
 
   // 7 — SSS
   var faqs=['Kapora politikanız nedir?','Stüdyo nerede?','Nasıl randevu alırım?','Dövme bakımı nasıl yapılır?','Tasarımı ne zaman görürüm?','Randevudan önce ne yapmalıyım?'];
