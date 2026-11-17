@@ -467,6 +467,13 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.147.0/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
+(()=>{try{var q=new URLSearchParams(location.search),h=q.get('h');if(h===null)return;window.__hv=/^[abcd]$/.test(h)?h:'0';
+  var bar=document.createElement('div');bar.style.cssText='position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:9999;display:flex;gap:6px;padding:6px;background:rgba(5,5,7,.82);border:1px solid rgba(244,245,248,.35);border-radius:999px;font:500 12px/1 ui-monospace,Menlo,monospace;max-width:96vw;overflow:auto';
+  [['0','Mevcut'],['a','A · Akıcı tur'],['b','B · Sabit duruş'],['c','C · Sarkaç'],['d','D · Döner tabla']].forEach(function(v){var b=document.createElement('button');b.textContent=v[1];b.dataset.v=v[0];
+    b.style.cssText='all:unset;cursor:pointer;padding:8px 12px;border-radius:999px;white-space:nowrap;color:#F4F5F8';
+    b.onclick=function(){window.__hv=v[0];paint();try{history.replaceState(null,'','?h='+v[0])}catch(e){}};bar.appendChild(b)});
+  function paint(){[].forEach.call(bar.children,function(b){var on=b.dataset.v===window.__hv;b.style.background=on?'#F4F5F8':'transparent';b.style.color=on?'#050507':'#F4F5F8'})}
+  paint();document.body.appendChild(bar)}catch(e){}})();
 (()=>{
   if(!window.THREE||!THREE.GLTFLoader) return;
   const canvas=document.getElementById('bust'), pin=canvas.parentElement, scene3=document.getElementById('scene');
@@ -558,13 +565,23 @@ diffuseColor.rgb*=mix(1.,.55,smoothstep(th+.12,th,dz)*step(.001,uMelt)); // çö
       {p:p2,         z:mob?2.0:2.1,    h:.2,  fx:-.22, ry:2*TAU-.38,   rx:-.06},   // Atölye: eller ve kitap
       {p:.67,        z:1.05,           h:.08,         ry:2*TAU+2.4,   rx:.02},   // kapanış: tüm heykel, arkadan
       {p:1,          z:1.0,            h:.08,         ry:2*TAU+2.9,   rx:.02}];
-    let i0=0; while(i0<K.length-2&&cur>K[i0+1].p) i0++;
-    const A=K[i0], B=K[i0+1], u=ease(clamp((cur-A.p)/Math.max(1e-4,B.p-A.p))), L=(a,b)=>a+(b-a)*u;
-    const S=flat?Math.min(1.2,asp*3.49/(2.5*wr)*.96):s0*L(A.z,B.z);
-    rig.rotation.y=flat?-.38:L(A.ry,B.ry);
-    rig.rotation.x=flat?.05:L(A.rx,B.rx);
+    // hareket varyantları (window.__hv): 0 mevcut · a akıcı tur · b sabit duruş · c sarkaç · d döner tabla
+    const HV=window.__hv||'0', seg=(T,c)=>{let i=0;while(i<T.length-2&&c>T[i+1].p)i++;const A=T[i],B=T[i+1],u=ease(clamp((c-A.p)/Math.max(1e-4,B.p-A.p))),L=(a,b)=>a+(b-a)*u;
+      return {z:L(A.z,B.z),h:L(A.h,B.h),fx:L(A.fx||0,B.fx||0),ry:L(A.ry||0,B.ry||0),rx:L(A.rx||0,B.rx||0)}};
+    let P;
+    if(HV==='0')P=seg(K,cur);
+    else{ // yakınlaşma daha yumuşak; dönüş kaydırmayla sabit hızda ilerler (dur-kalk yok)
+      const Z=[{p:0,z:1,h:mob?.38:.16},{p:p1,z:1.9,h:.85,fx:-.18},{p:(p1+p2)/2,z:1.2,h:.2},{p:p2,z:1.8,h:.2,fx:-.2},{p:.67,z:1.05,h:.08},{p:1,z:1,h:.08}], q=seg(Z,cur);
+      P=HV==='a'?{z:q.z,h:q.h,fx:q.fx,ry:-.38+TAU*1.25*cur,rx:.02}
+       :HV==='b'?{z:q.z,h:q.h,fx:q.fx,ry:-.38+.35*Math.sin(cur*TAU*.75),rx:.02}
+       :HV==='c'?{z:1.25,h:(mob?.38:.3)-.36*cur,fx:0,ry:.7*Math.sin(cur*TAU*1.25-.573),rx:.02}
+       :{z:1.15,h:mob?.3:.14,fx:0,ry:-.38+TAU*cur,rx:.02};
+    }
+    const S=flat?Math.min(1.2,asp*3.49/(2.5*wr)*.96):s0*P.z;
+    rig.rotation.y=flat?-.38:P.ry;
+    rig.rotation.x=flat?.05:P.rx;
     rig.scale.setScalar(S);
-    const focusY=flat?-.1:-L(A.h,B.h)*S, focusX=flat?0:-L(A.fx||0,B.fx||0)*S;
+    const focusY=flat?-.1:-P.h*S, focusX=flat?0:-P.fx*S;
     // metin bloğu ekrandayken büst karşı tarafa kayar (masaüstü): sol blok → sağa, sağ blok → sola
     let tx=0;
     if(!flat&&!mob) blks.forEach(b=>{const r=b.getBoundingClientRect(), w=clamp(1.7-Math.abs(r.top+r.height/2-vh*.5)/(vh*.6));
