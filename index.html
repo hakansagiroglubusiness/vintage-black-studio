@@ -193,6 +193,10 @@ section{position:relative}
   .slides>div{transform:none!important;transition:opacity 1.4s ease!important}
   html{scroll-behavior:auto}
 }
+/* 10 — mürekkep damlası: kaydırdıkça iner */
+.drip{position:fixed;top:calc(var(--logo) + 26px);bottom:26px;right:max(3px,calc(var(--g)/2 - var(--dw)/2));width:var(--dw);z-index:60;pointer-events:none;mix-blend-mode:difference;--dw:clamp(11px,.95vw,16px)}
+.drip i{position:absolute;left:50%;top:0;width:1px;margin-left:-.5px;height:1px;background:#fff;opacity:.6;transform-origin:50% 0}
+.drip svg{position:absolute;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);fill:#fff;transform-origin:50% 0;will-change:transform}
 </style>
 </head>
 <body>
@@ -202,6 +206,7 @@ section{position:relative}
   <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="panel">Menu</button>
 </header>
 
+<div class="drip" id="drip" aria-hidden="true"><i></i><svg viewBox="0 0 20 30"><path d="M10 0C10 9 0 14 0 20a10 10 0 0 0 20 0C20 14 10 9 10 0Z"/></svg></div>
 <div class="scrim" id="scrim"></div>
 <aside class="panel" id="panel" aria-label="Menü">
   <div class="panel__top"><span class="mark disp" aria-label="Vintage Black Studio"><span aria-hidden="true">V<span class="alt">B</span></span></span><button class="pill" id="menuClose">Kapat</button></div>
@@ -344,6 +349,16 @@ section{position:relative}
   $$('.cat').forEach(function(b){b.addEventListener('click',function(){openGal(b)})});
   $('#galClose').addEventListener('click',closeGal);
   document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;if(gal.classList.contains('open'))closeGal();else if(body.classList.contains('menu-open'))menu(false)});
+  // 10 — mürekkep damlası: konum = kaydırma oranı, hızla uzar, durunca yaylanıp toparlanır
+  (function(){var d=$('#drip'),ln=$('i',d),dr=$('svg',d),y=0,s=1,v=0,ly=scrollY,raf=0;
+    function tick(){raf=0;var max=document.documentElement.scrollHeight-innerHeight,H=d.clientHeight-dr.clientHeight,
+      t=max>0?Math.min(1,Math.max(0,scrollY/max))*H:0,dy=scrollY-ly;ly=scrollY;
+      y+=(t-y)*.22;var ts=1+Math.min(Math.abs(dy)/55,.85);v+=(ts-s)*.2;v*=.72;s+=v;
+      ln.style.transform='scaleY('+Math.max(1,y)+')';
+      dr.style.transform='translateY('+y+'px) scale('+(1/Math.sqrt(s))+','+s+')';
+      if(Math.abs(t-y)>.3||Math.abs(s-1)>.004||Math.abs(v)>.004)raf=requestAnimationFrame(tick)}
+    function kick(){if(!raf)raf=requestAnimationFrame(tick)}
+    addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);kick()})();
 })();
 </script>
 </body>
