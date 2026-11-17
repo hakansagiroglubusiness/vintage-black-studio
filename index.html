@@ -194,9 +194,9 @@ section{position:relative}
   html{scroll-behavior:auto}
 }
 /* 10 — mürekkep damlası: boşluklardan süzülerek sayfayı dolaşır, arkasında ince bir iz bırakır */
-.drip{position:fixed;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;--dw:clamp(12px,1vw,17px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
+.drip{position:fixed;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;mix-blend-mode:difference;--dw:clamp(11px,.95vw,16px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
 .drip.on{opacity:1}
-.drip svg{display:block;width:100%;height:100%;overflow:visible}
+.drip svg{display:block;width:100%;height:100%;fill:#fff}
 .drip.on.end{opacity:0;transition:opacity .1s}
 .ch{transition:color .7s var(--ease)}.ch.ink{color:var(--green-hi)}
 .orn::after{content:"";position:absolute;inset:0;background:var(--green-hi);opacity:0;transition:opacity 1s var(--ease)}.orn.ink::after{opacity:1}
@@ -230,7 +230,7 @@ section{position:relative}
 </header>
 
 <canvas class="trail" id="trail" aria-hidden="true"></canvas>
-<div class="drip" id="drip" aria-hidden="true"><svg viewBox="0 0 20 30"><defs><radialGradient id="dg" cx=".42" cy=".6" r=".62"><stop offset="0" stop-color="#eafaf5" stop-opacity=".05"/><stop offset=".7" stop-color="#bfe6da" stop-opacity=".2"/><stop offset="1" stop-color="#e9fbf6" stop-opacity=".62"/></radialGradient></defs><path d="M10 .6C10 9 .7 14 .7 20a9.3 9.3 0 0 0 18.6 0C19.3 14 10 9 10 .6Z" fill="url(#dg)" stroke="rgba(240,252,248,.8)" stroke-width=".8"/><ellipse cx="6.4" cy="18.2" rx="1.7" ry="3" fill="#fff" opacity=".85" transform="rotate(18 6.4 18.2)"/><circle cx="13.6" cy="24" r="1" fill="#fff" opacity=".5"/></svg></div>
+<div class="drip" id="drip" aria-hidden="true"><svg viewBox="0 0 20 30"><path d="M10 0C10 9 0 14 0 20a10 10 0 0 0 20 0C20 14 10 9 10 0Z"/></svg></div>
 <div class="scrim" id="scrim"></div>
 <aside class="panel" id="panel" aria-label="Menü">
   <div class="panel__top"><span class="mark disp" aria-label="Vintage Black Studio"><span aria-hidden="true">V<span class="alt">B</span></span></span><button class="pill" id="menuClose">Kapat</button></div>
@@ -369,10 +369,10 @@ section{position:relative}
   // Sağ kenardan iner → "Stüdyo Hakkında" başlığında sola dönüp karşı kenara geçer → sol kenardan iner →
   // imzaya gider → altındaki süslemeye gider → ortadan "Seçme İşler" başlığına iner ve orada biter.
   // Dokunduğu harfler ve süslemeler vurgu rengine döner; yukarı çıkınca geri alınır.
-  (function(){var d=$('#drip'),tr=$('#trail'),cx=tr.getContext('2d'),P=[],B=[],RL=null,imp=0,DW=14,lf=-1,LIFE=2600,dpr=1,SP=6,PX=[],PY=[],PK=[],S=[],TG=[],f=-1,s=1,v=0,ly=scrollY,raf=0,tm=0,lui=-9,
+  (function(){var d=$('#drip'),tr=$('#trail'),cx=tr.getContext('2d'),t2=document.createElement('canvas'),c2=t2.getContext('2d'),nz=.5,P=[],B=[],RL=null,imp=0,DW=14,lf=-1,LIFE=2600,dpr=1,SP=6,PX=[],PY=[],PK=[],S=[],TG=[],f=-1,s=1,v=0,ly=scrollY,raf=0,tm=0,lui=-9,
       LN='.about__head .ln>span,.work .h2 .ln>span',de=document.documentElement;
     $$('.about__head,.work .h2').forEach(function(h){h.setAttribute('aria-label',$$('.ln>span',h).map(function(l){return l.textContent.replace(/\(\d+\)/,'')}).join(' '))});
-    $$(LN+',.work__lead').forEach(function(sp){[].slice.call(sp.childNodes).forEach(function(n){
+    $$(LN).forEach(function(sp){[].slice.call(sp.childNodes).forEach(function(n){
       if(n.nodeType===3){var fr=document.createDocumentFragment();n.nodeValue.split('').forEach(function(c){var e=document.createElement('span');e.className='ch';e.textContent=c;fr.appendChild(e)});sp.replaceChild(fr,n)}
       else if(n.nodeType===1)n.classList.add('ch')})});
     function sm(A,R){var n=A.length,B=A.slice();for(var i=0;i<n;i++){var a=0,c=0;for(var k=-R;k<=R;k++){var q=A[Math.min(n-1,Math.max(0,i+k))],w=R+1-Math.abs(k);a+=q*w;c+=w}B[i]=a/c}return B}
@@ -422,9 +422,8 @@ section{position:relative}
       function hit(r){for(var i=0;i<N;i++){var x=PX[i],y=PY[i];if(y<r.t-th||y>r.b+th)continue;var ex=Math.max(r.l-x,0,x-r.r),ey=Math.max(r.t-y,0,y-r.b);if(ex*ex+ey*ey<th*th)return i}return -1}
       $$(LN).forEach(function(line){var cs=$$('.ch',line).filter(function(c){return c.parentElement===line}),R=cs.map(rc),U=R.map(hit),any=U.some(function(u){return u>=0});
         cs.forEach(function(c,n){var u=U[n];if(u<0&&any){u=1e9;U.forEach(function(ut,m){if(ut>=0)u=Math.min(u,ut+Math.abs((R[n].l+R[n].r)/2-(R[m].l+R[m].r)/2)/SP*.9)})}TG.push({el:c,u:u})})});
-      $$('.work__lead>.ch').forEach(function(c){TG.push({el:c,u:hit(rc(c))})});
       [sg,ov].forEach(function(el){var r=rc(el),w=(r.r-r.l)*.18,h=(r.b-r.t)*.18;TG.push({el:el,u:hit({l:r.l+w,r:r.r-w,t:r.t+h,b:r.b-h})})});
-      DW=dw;imp=0;rl.style.opacity='';dpr=Math.min(2,devicePixelRatio||1);tr.width=Math.round(innerWidth*dpr);tr.height=Math.round(vh*dpr);P=[];B=[];lf=-1;f=-1;lui=-9;d.classList.add('on');kick()}
+      DW=dw;imp=0;rl.style.opacity='';dpr=Math.min(2,devicePixelRatio||1);tr.width=Math.round(innerWidth*dpr);tr.height=Math.round(vh*dpr);t2.width=tr.width;t2.height=tr.height;P=[];B=[];lf=-1;f=-1;lui=-9;d.classList.add('on');kick()}
     function tick(){raf=0;var N=PX.length;if(N<2)return;var sc=scrollY,t,dy=sc-ly;ly=sc;
       if(sc>=S[N-1])t=N-1;else{var lo=0,hi=N-1;while(hi-lo>1){var md=(lo+hi)>>1;if(S[md]<=sc)lo=md;else hi=md}t=lo+(sc-S[lo])/(S[hi]-S[lo]||1)}
       if(f<0)f=t;f+=(t-f)*.2;if(Math.abs(t-f)<.03)f=t;
@@ -436,16 +435,17 @@ section{position:relative}
       d.classList.toggle('end',f>=N-1.5);
       var now=performance.now(),busy=0,i,q;
       // su izi: geçilen noktalar zaman damgasıyla tutulur; her kare yaşına göre incelip solarak çizilir
-      if(lf<0)lf=f;if(Math.abs(f-lf)>.2){var st=f>lf?1:-1,n=Math.min(600,Math.floor(Math.abs(f-lf)));for(i=1;i<=n;i++){var g=lf+st*i;P.push([at(PX,g),at(PY,g),now,at(PK,g)]);}
-        P.push([x,y,now,k]);lf=f}
+      if(lf<0)lf=f;if(Math.abs(f-lf)>.2){var st=f>lf?1:-1,n=Math.min(600,Math.floor(Math.abs(f-lf)));for(i=1;i<=n;i++){var g=lf+st*i;nz=Math.min(1,Math.max(0,nz+(Math.random()-.5)*.22));P.push([at(PX,g),at(PY,g),now,at(PK,g),nz]);}
+        P.push([x,y,now,k,nz]);lf=f}
       while(P.length&&now-P[0][2]>LIFE)P.shift();
       cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,innerWidth,innerHeight);cx.lineCap='butt';
-      // su izi: damlanın yarısı genişliğinde ıslak şerit, yaşlandıkça daralıp kurur; kenarında ince bir ışık yansıması
-      for(var pass=0;pass<2;pass++)for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],sl=Math.hypot(a[0]-b[0],a[1]-b[1]);if(sl>SP*4||sl<.01)continue;var py=b[1]-sc;if(py<-40||py>innerHeight+40)continue;
-        var u=1-(now-b[2])/LIFE;if(u<=0)continue;var e=u*u*(3-2*u),bw=DW*.5*Math.pow(e,1.3)*b[3],ox=0,oy=0;
-        if(pass){ox=-(b[1]-a[1])/sl*bw*.24;oy=(b[0]-a[0])/sl*bw*.24;cx.strokeStyle='rgba(236,251,246,'+(.4*e).toFixed(3)+')';cx.lineWidth=Math.max(.5,bw*.13)}
-        else{cx.strokeStyle='rgba(120,190,172,'+(.2*e).toFixed(3)+')';cx.lineWidth=bw}
-        cx.beginPath();cx.moveTo(a[0]+ox,a[1]-sc+oy);cx.lineTo(b[0]+ox,py+oy);cx.stroke()}
+      // su izi: soluk, düzensiz genişlikte bir ıslaklık; kururken önce ince yerlerinden kopar, damlacıklara bölünüp kaybolur
+      // (önce ayrı bir katmana opak çizilir, sonra tek seferde soluk basılır: parça ek yerleri görünmez)
+      c2.setTransform(dpr,0,0,dpr,0,0);c2.clearRect(0,0,innerWidth,innerHeight);c2.lineCap='round';c2.strokeStyle='rgb(168,205,194)';
+      for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],sl=Math.hypot(a[0]-b[0],a[1]-b[1]);if(sl>SP*4)continue;var py=b[1]-sc;if(py<-40||py>innerHeight+40)continue;
+        var u=1-(now-b[2])/LIFE;if(u<=0||b[4]<(1-u)*1.15-.12)continue;
+        c2.lineWidth=Math.max(.6,DW*(.22+.5*b[4])*Math.min(1,u*1.7)*b[3]);c2.beginPath();c2.moveTo(a[0],a[1]-sc);c2.lineTo(b[0],py);c2.stroke()}
+      cx.globalAlpha=.22;cx.setTransform(1,0,0,1,0,0);cx.drawImage(t2,0,0);cx.setTransform(dpr,0,0,dpr,0,0);cx.globalAlpha=1;
       // bitiş: damla "Dövme galerisi" çizgisine suya düşer gibi çarpar; çizgi dalgalanır, küçük bir sütun yükselip iki damlacık geri düşer
       if(RL){var atEnd=f>=N-1.3;if(atEnd&&!imp)imp=now;if(!atEnd&&f<N-4&&imp){imp=0;RL.el.style.opacity=''}
         if(imp){var tt=(now-imp)/1000;if(tt<3.2){busy=1;RL.el.style.opacity='0';var ly2=RL.y-sc,x0=RL.x,fr=300*tt;
