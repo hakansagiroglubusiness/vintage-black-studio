@@ -10,7 +10,7 @@
 <style>
 :root{
   --black:#050507; --graphite:#1B1C22; --silver:#C9CAD0; --cream:#F4F5F8;
-  --green:#12382F; --green-hi:#58A892; --panel:#CFCFD3;
+  --green:#254B40; --green-hi:#254B40; --panel:#CFCFD3;
   --display:"Anton","Arial Narrow",Impact,sans-serif;
   --alt:"Manufacturing Consent","Old English Text MT",Georgia,serif;
   --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
@@ -194,13 +194,13 @@ section{position:relative}
   html{scroll-behavior:auto}
 }
 /* 10 — mürekkep damlası: boşluklardan süzülerek sayfayı dolaşır, arkasında ince bir iz bırakır */
-.drip{position:fixed;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;mix-blend-mode:difference;--dw:clamp(11px,.95vw,16px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
+.drip{position:absolute;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;--dw:clamp(11px,.95vw,16px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
 .drip.on{opacity:1}
-.drip svg{display:block;width:100%;height:100%;fill:#fff}
+.drip svg{display:block;width:100%;height:100%;fill:var(--green-hi)}
 .drip.on.end{opacity:0;transition:opacity .1s}
 .ch{transition:color .7s var(--ease)}.ch.ink{color:var(--green-hi)}
 .orn::after{content:"";position:absolute;inset:0;background:var(--green-hi);opacity:0;transition:opacity 1s var(--ease)}.orn.ink::after{opacity:1}
-.trail{position:fixed;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+.trail{position:absolute;left:0;top:0;z-index:4;pointer-events:none;will-change:transform}
 /* 11 — süslemeler: maske olarak basılır, kaydırdıkça içinden yeşil bir parıltı geçer */
 .orn{display:block;aspect-ratio:var(--ar);background:linear-gradient(115deg,var(--cream) 0 41%,var(--green-hi) 50%,var(--cream) 59% 100%) calc(var(--sp,0)*100%) 0/340% 100%;
   -webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;transform:translateY(calc((.5 - var(--sp,.5))*var(--par,26px)));
@@ -369,7 +369,7 @@ section{position:relative}
   // Sağ kenardan iner → "Stüdyo Hakkında" başlığında sola dönüp karşı kenara geçer → sol kenardan iner →
   // imzaya gider → altındaki süslemeye gider → ortadan "Seçme İşler" başlığına iner ve orada biter.
   // Dokunduğu harfler ve süslemeler vurgu rengine döner; yukarı çıkınca geri alınır.
-  (function(){var d=$('#drip'),tr=$('#trail'),cx=tr.getContext('2d'),t2=document.createElement('canvas'),c2=t2.getContext('2d'),nz=.5,P=[],B=[],RL=null,imp=0,DW=14,lf=-1,LIFE=2600,dpr=1,SP=6,PX=[],PY=[],PK=[],S=[],TG=[],f=-1,s=1,v=0,ly=scrollY,raf=0,tm=0,lui=-9,
+  (function(){var d=$('#drip'),tr=$('#trail'),cx=tr.getContext('2d'),t2=document.createElement('canvas'),c2=t2.getContext('2d'),nz=.5,P=[],B=[],RL=null,imp=0,DW=14,CT=-1e9,CH=0,CW=0,DH=0,lf=-1,LIFE=2600,SP=6,PX=[],PY=[],PK=[],S=[],TG=[],f=-1,s=1,v=0,ly=scrollY,raf=0,tm=0,lui=-9,
       LN='.about__head .ln>span,.work .h2 .ln>span',de=document.documentElement;
     $$('.about__head,.work .h2').forEach(function(h){h.setAttribute('aria-label',$$('.ln>span',h).map(function(l){return l.textContent.replace(/\(\d+\)/,'')}).join(' '))});
     $$(LN).forEach(function(sp){[].slice.call(sp.childNodes).forEach(function(n){
@@ -424,13 +424,13 @@ section{position:relative}
       $$(LN).forEach(function(line){var cs=$$('.ch',line).filter(function(c){return c.parentElement===line}),R=cs.map(rc),U=R.map(hit),any=U.some(function(u){return u>=0});
         cs.forEach(function(c,n){var u=U[n];if(u<0&&any){u=1e9;U.forEach(function(ut,m){if(ut>=0)u=Math.min(u,ut+Math.abs((R[n].l+R[n].r)/2-(R[m].l+R[m].r)/2)/SP*.9)})}TG.push({el:c,u:u})})});
       [sg,ov].forEach(function(el){var r=rc(el),w=(r.r-r.l)*.18,h=(r.b-r.t)*.18;TG.push({el:el,u:hit({l:r.l+w,r:r.r-w,t:r.t+h,b:r.b-h})})});
-      DW=dw;imp=0;rl.style.opacity='';dpr=Math.min(2,devicePixelRatio||1);tr.width=Math.round(innerWidth*dpr);tr.height=Math.round(vh*dpr);t2.width=tr.width;t2.height=tr.height;P=[];B=[];lf=-1;f=-1;lui=-9;d.classList.add('on');kick()}
+      DW=dw;imp=0;rl.style.opacity='';tr.style.transform='';tr.width=tr.height=1;DH=de.scrollHeight;CW=W;CH=Math.min(DH,vh+700);tr.width=t2.width=CW;tr.height=t2.height=CH;CT=-1e9;P=[];B=[];lf=-1;f=-1;lui=-9;d.classList.add('on');kick()}
     function tick(){raf=0;var N=PX.length;if(N<2)return;var sc=scrollY,t,dy=sc-ly;ly=sc;
       if(sc>=S[N-1])t=N-1;else{var lo=0,hi=N-1;while(hi-lo>1){var md=(lo+hi)>>1;if(S[md]<=sc)lo=md;else hi=md}t=lo+(sc-S[lo])/(S[hi]-S[lo]||1)}
       if(f<0)f=t;f+=(t-f)*.2;if(Math.abs(t-f)<.03)f=t;
       var ts=1+Math.min(Math.abs(dy)/55,.8);v+=(ts-s)*.2;v*=.72;s+=v;
       var x=at(PX,f),y=at(PY,f),k=at(PK,f),ax=at(PX,f+2)-at(PX,f-2),ay=at(PY,f+2)-at(PY,f-2),ang=ax||ay?-Math.atan2(ax,ay):0;
-      d.style.transform='translate('+(x-d.offsetWidth/2)+'px,'+(y-sc)+'px) rotate('+ang+'rad) scale('+(k/Math.sqrt(s))+','+(k*s)+')';
+      d.style.transform='translate('+(x-DW/2).toFixed(1)+'px,'+y.toFixed(1)+'px) rotate('+ang+'rad) scale('+(k/Math.sqrt(s))+','+(k*s)+')';
       var ui=f>=N-1.01?N-1+Math.max(0,sc-S[N-1])/SP:f;
       if(Math.abs(ui-lui)>.3){TG.forEach(function(g){g.el.classList.toggle('ink',g.u>=0&&ui>=g.u)});lui=ui}
       d.classList.toggle('end',f>=N-1.5);
@@ -439,17 +439,19 @@ section{position:relative}
       if(lf<0)lf=f;if(Math.abs(f-lf)>.2){var st=f>lf?1:-1,n=Math.min(600,Math.floor(Math.abs(f-lf)));for(i=1;i<=n;i++){var g=lf+st*i;nz=Math.min(1,Math.max(0,nz+(Math.random()-.5)*.22));P.push([at(PX,g),at(PY,g),now,at(PK,g),nz]);}
         P.push([x,y,now,k,nz]);lf=f}
       while(P.length&&now-P[0][2]>LIFE)P.shift();
-      cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,innerWidth,innerHeight);cx.lineCap='butt';
+      // tuval belgeye sabit bir pencere: kaydırmada sayfayla birlikte kayar, yalnızca kenarına yaklaşınca taşınır
+      if(sc<CT+80||sc+innerHeight>CT+CH-80){CT=Math.max(0,Math.min(DH-CH,sc-(CH-innerHeight)/2));tr.style.transform='translateY('+CT+'px)'}
+      cx.clearRect(0,0,CW,CH);cx.lineCap='butt';var drew=0;
       // su izi: soluk, düzensiz genişlikte bir ıslaklık; kururken önce ince yerlerinden kopar, damlacıklara bölünüp kaybolur
       // (önce ayrı bir katmana opak çizilir, sonra tek seferde soluk basılır: parça ek yerleri görünmez)
-      c2.setTransform(dpr,0,0,dpr,0,0);c2.clearRect(0,0,innerWidth,innerHeight);c2.lineCap='round';c2.strokeStyle='rgb(168,205,194)';
-      for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],sl=Math.hypot(a[0]-b[0],a[1]-b[1]);if(sl>SP*4)continue;var py=b[1]-sc;if(py<-40||py>innerHeight+40)continue;
+      if(P.length>1){c2.clearRect(0,0,CW,CH);c2.lineCap='round';c2.strokeStyle='#254B40';
+      for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],sl=Math.hypot(a[0]-b[0],a[1]-b[1]);if(sl>SP*4)continue;var py=b[1]-CT;if(py<-40||py>CH+40)continue;
         var u=1-(now-b[2])/LIFE;if(u<=0||b[4]<(1-u)*1.15-.12)continue;
-        c2.lineWidth=Math.max(.6,DW*(.22+.5*b[4])*Math.min(1,u*1.7)*b[3]);c2.beginPath();c2.moveTo(a[0],a[1]-sc);c2.lineTo(b[0],py);c2.stroke()}
-      cx.globalAlpha=.22;cx.setTransform(1,0,0,1,0,0);cx.drawImage(t2,0,0);cx.setTransform(dpr,0,0,dpr,0,0);cx.globalAlpha=1;
+        c2.lineWidth=Math.max(.6,DW*(.22+.5*b[4])*Math.min(1,u*1.7)*b[3]);c2.beginPath();c2.moveTo(a[0],a[1]-CT);c2.lineTo(b[0],py);c2.stroke();drew=1}
+      if(drew){cx.globalAlpha=.8;cx.drawImage(t2,0,0);cx.globalAlpha=1}}
       // bitiş: damla "Dövme galerisi" çizgisine suya düşer gibi çarpar; çizgi dalgalanır, küçük bir sütun yükselip iki damlacık geri düşer
       if(RL){var atEnd=f>=N-1.3;if(atEnd&&!imp)imp=now;if(!atEnd&&f<N-4&&imp){imp=0;RL.el.style.opacity=''}
-        if(imp){var tt=(now-imp)/1000;if(tt<3.2){busy=1;RL.el.style.opacity='0';var ly2=RL.y-sc,x0=RL.x,fr=300*tt;
+        if(imp){var tt=(now-imp)/1000;if(tt<3.2){busy=1;RL.el.style.opacity='0';var ly2=RL.y-CT,x0=RL.x,fr=300*tt;
             cx.strokeStyle='rgba(244,245,248,.8)';cx.lineWidth=1;cx.beginPath();
             for(var xx=RL.l;xx<=RL.r;xx+=3){var dd=Math.abs(xx-x0),env=dd<fr?Math.min(1,(fr-dd)/50):0,
                 yv=7*Math.exp(-tt/.85)*Math.exp(-dd/360)*env*Math.sin(dd*.098-tt*16.3)
@@ -468,7 +470,7 @@ section{position:relative}
 
   // 11 — süslemelerde kaydırmaya bağlı parıltı
   (function(){var os=$$('.orn'),r=0;function up(){r=0;os.forEach(function(o){var b=o.getBoundingClientRect();if(b.bottom<-80||b.top>innerHeight+80)return;
-      o.style.setProperty('--sp',Math.min(1,Math.max(0,1-(b.top+b.height/2)/innerHeight)).toFixed(3))})}
+      var v=Math.min(1,Math.max(0,1-(b.top+b.height/2)/innerHeight)).toFixed(2);if(o._sp!==v){o._sp=v;o.style.setProperty('--sp',v)}})}
     addEventListener('scroll',function(){if(!r)r=requestAnimationFrame(up)},{passive:true});up()})();
 })();
 </script>
