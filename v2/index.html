@@ -219,6 +219,13 @@ h1,h2,h3,p{margin:0}
 </style>
 </head>
 <body>
+<script>/* kapıdan geçiş: ana sayfadaki kapılardan gelindiyse ekran kemer biçiminde açılır */
+(function(){try{var g=sessionStorage.getItem('vbs-gate');if(!g)return;sessionStorage.removeItem('vbs-gate');if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99999;pointer-events:none;background:'+(g==='cennet'?'#F4F5F8':'#000');document.body.appendChild(o);
+var t0=0;function fr(t){if(!t0)t0=t;var k=Math.min(1,(t-t0-250)/1700);if(k<0)k=0;var e=k*k*k*(k*(6*k-15)+10),r=e*125,m='radial-gradient(ellipse '+r+'vmax '+(r*1.45)+'vmax at 50% 64%,transparent 0,transparent 58%,#000 100%)';
+o.style.webkitMaskImage=m;o.style.maskImage=m;if(k<1)requestAnimationFrame(fr);else o.remove()}
+o.style.webkitMaskImage=o.style.maskImage='linear-gradient(#000,#000)';requestAnimationFrame(fr)}catch(e){}})();</script>
+
 <div class="grain" aria-hidden="true"></div>
 <canvas id="smoke" aria-hidden="true"></canvas>
 
