@@ -9,186 +9,137 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Manufacturing+Consent&display=swap" rel="stylesheet">
 <style>
-:root{--black:#050507;--cream:#F4F5F8;--display:"Anton","Arial Narrow",Impact,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--alt:"Manufacturing Consent","Old English Text MT",Georgia,serif;--g:clamp(14px,1.3vw,22px)}
+:root{--black:#050507;--cream:#F4F5F8;--display:"Anton","Arial Narrow",Impact,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--alt:"Manufacturing Consent","Old English Text MT",Georgia,serif;--g:clamp(14px,1.3vw,22px);--ease:cubic-bezier(.2,.8,.2,1)}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-family:var(--mono);-webkit-font-smoothing:antialiased}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
-.ui{position:fixed;inset:0;pointer-events:none;transition:opacity .5s}
-.go .ui{opacity:0}
-.mark{position:absolute;left:var(--g);top:12px;font-family:var(--display);font-size:clamp(38px,3vw,48px);line-height:1;letter-spacing:-.02em;height:clamp(40px,3.1vw,50px);display:flex;align-items:center}
+
+/* sahne: gravür + ışık katmanları. .zoom kapıya doğru büyür, .par imleçle hafifçe kayar */
+.zoom,.par{position:fixed;inset:0}
+.zoom{will-change:transform}
+.par{transform:scale(1.05);will-change:transform;opacity:0;transition:opacity 1.6s ease}
+.rdy .par{opacity:1}
+.par img{position:absolute;left:var(--ox);top:var(--oy);width:var(--dw);height:var(--dh);max-width:none;display:block;filter:brightness(.82) contrast(1.06);transition:filter 1s var(--ease)}
+.hov .par img{filter:brightness(.9) contrast(1.08)}
+.glow,.rays{position:absolute;border-radius:50%;transform:translate(-50%,-50%);mix-blend-mode:screen;opacity:0;transition:opacity .9s var(--ease),width 1.9s cubic-bezier(.6,0,.8,.2),height 1.9s cubic-bezier(.6,0,.8,.2);pointer-events:none}
+.glow--h{left:var(--hx);top:var(--hy);width:calc(var(--hr)*2.6);height:calc(var(--hr)*3.4);background:radial-gradient(closest-side,rgba(255,252,240,.95),rgba(255,246,222,.55) 34%,rgba(255,240,205,.16) 62%,transparent 78%)}
+.rays{left:var(--hx);top:var(--hy);width:calc(var(--hr)*9);height:calc(var(--hr)*9);
+  background:repeating-conic-gradient(from 0deg,transparent 0 5deg,rgba(255,248,228,.3) 6.5deg,transparent 9deg 14deg,rgba(255,248,228,.18) 15deg,transparent 17deg 23deg);
+  -webkit-mask:radial-gradient(closest-side,#000 8%,rgba(0,0,0,.5) 34%,transparent 72%);mask:radial-gradient(closest-side,#000 8%,rgba(0,0,0,.5) 34%,transparent 72%);animation:spin 90s linear infinite}
+.glow--e{left:var(--ex);top:var(--ey);width:calc(var(--er)*3.2);height:calc(var(--er)*3.4);background:radial-gradient(closest-side,rgba(255,170,80,.95),rgba(255,96,30,.6) 36%,rgba(170,26,6,.24) 64%,transparent 80%);animation:flick 2.6s ease-in-out infinite}
+.glow--h,.glow--e{opacity:.16}
+.hl .glow--h{opacity:.92}.hl .rays{opacity:.9}.hr .glow--e{opacity:.95}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes flick{0%,100%{filter:brightness(1)}18%{filter:brightness(.78)}34%{filter:brightness(1.12)}52%{filter:brightness(.86)}71%{filter:brightness(1.06)}86%{filter:brightness(.8)}}
+.shade{position:absolute;inset:-6%;pointer-events:none;opacity:0;transition:opacity .9s var(--ease)}
+.shade--v{opacity:1;background:radial-gradient(120% 95% at 50% 46%,transparent 42%,rgba(0,0,0,.6) 100%),linear-gradient(180deg,rgba(5,5,7,.55) 0,transparent 30%,transparent 68%,rgba(5,5,7,.7) 100%)}
+.shade--r{background:linear-gradient(90deg,transparent 38%,rgba(0,0,0,.78) 66%)}
+.shade--l{background:linear-gradient(270deg,transparent 38%,rgba(0,0,0,.78) 66%)}
+.hl .shade--r,.hr .shade--l{opacity:1}
+#fx{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:screen}
+/* geçiş */
+.go .zoom{transition:transform 2s cubic-bezier(.72,0,.9,.3)}
+.go .glow--h,.go .glow--e{opacity:1!important}
+.go.hl .glow--h{width:calc(var(--hr)*7);height:calc(var(--hr)*9)}
+.go.hr .glow--e{width:calc(var(--er)*5);height:calc(var(--er)*5.4)}
+.veil{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity .55s ease-in}
+
+/* arayüz */
+.ui{position:fixed;inset:0;transition:opacity .5s}
+.go .ui{opacity:0;pointer-events:none}
+.mark{position:absolute;left:var(--g);top:12px;font-family:var(--display);font-size:clamp(38px,3vw,48px);line-height:1;letter-spacing:-.02em;height:clamp(40px,3.1vw,50px);display:flex;align-items:center;pointer-events:none}
 .mark i{font-family:var(--alt);font-style:normal;font-size:1.3em;display:inline-block;transform:translateY(.03em) scaleX(.725);margin-left:-.1em}
-.head{position:absolute;left:0;right:0;top:clamp(58px,9svh,96px);text-align:center;padding:0 var(--g)}
-.head small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
-.head h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6.4vw,92px);line-height:.95;letter-spacing:.012em;margin:10px 0 0;text-transform:uppercase}
+.head{position:absolute;left:0;right:0;top:clamp(54px,8.5svh,92px);text-align:center;padding:0 var(--g);pointer-events:none;text-shadow:0 2px 26px rgba(0,0,0,.85)}
+.head small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.head h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,6.2vw,90px);line-height:.95;letter-spacing:.012em;margin:10px 0 0;text-transform:uppercase}
 .head h1 span{display:inline-block;overflow:hidden;vertical-align:top;padding-top:.2em;margin-top:-.2em}
-.head h1 span b{display:inline-block;font-weight:400;transform:translateY(110%);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.head h1 span b{display:inline-block;font-weight:400;transform:translateY(110%);transition:transform 1.2s var(--ease) .5s}
 .rdy .head h1 span b{transform:none}
-.door{position:absolute;pointer-events:auto;display:block;color:inherit;text-decoration:none;outline:0;-webkit-tap-highlight-color:transparent;cursor:pointer}
-.door span{position:absolute;left:50%;top:100%;transform:translateX(-50%);padding-top:clamp(10px,2svh,22px);text-align:center;white-space:nowrap;transition:opacity .5s,letter-spacing .6s cubic-bezier(.2,.8,.2,1)}
-.door em{display:block;font-style:normal;font-size:10.5px;letter-spacing:.16em;opacity:.65}
-.door strong{display:block;font-family:var(--display);font-weight:400;font-size:clamp(20px,2.5vw,38px);letter-spacing:.04em;margin-top:4px}
-.door:hover span,.door:focus-visible span{letter-spacing:.06em}
-.door:focus-visible{box-shadow:0 0 0 1px var(--cream)}
-.dim{opacity:.38}
-.hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.55}
-.veil{position:fixed;inset:0;opacity:0;pointer-events:none;transition:opacity .45s linear}
-/* WebGL yoksa: sade iki kapı */
-.nogl canvas{display:none}
-.nogl .door{border:1px solid rgba(244,245,248,.5);border-bottom:0;border-radius:999px 999px 0 0}
-.nogl .door:first-of-type{background:radial-gradient(90% 60% at 50% 22%,#F4F5F8 0,#8e8f96 38%,#1b1c22 100%)}
-.nogl .door:last-of-type{background:radial-gradient(90% 55% at 50% 100%,#c9cad0 0,#3a3b44 30%,#050507 78%)}
-@media(max-width:560px){.hint{display:none}}
+.door{position:absolute;top:0;bottom:0;width:50%;display:block;color:inherit;text-decoration:none;outline:0;-webkit-tap-highlight-color:transparent;cursor:pointer}
+#dL{left:0}#dR{right:0}
+.door span{position:absolute;bottom:clamp(18px,4.5svh,44px);white-space:nowrap;transition:opacity .6s,transform .8s var(--ease);text-shadow:0 2px 22px rgba(0,0,0,.9)}
+#dL span{left:var(--g);text-align:left}#dR span{right:var(--g);text-align:right}
+.door em{display:block;font-style:normal;font-size:10.5px;letter-spacing:.16em;opacity:.7}
+.door strong{display:block;font-family:var(--display);font-weight:400;font-size:clamp(26px,3.4vw,54px);letter-spacing:.03em;margin-top:4px;line-height:1}
+.door u{display:block;text-decoration:none;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-top:8px;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .7s var(--ease)}
+.door:hover u,.door:focus-visible u{opacity:.8;transform:none}
+.door:focus-visible strong{text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px}
+.hl #dR span,.hr #dL span{opacity:.35}
+.hint{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.6;pointer-events:none;text-shadow:0 2px 14px #000}
+@media(max-width:700px){.hint{display:none}.door u{display:none}}
+@media(prefers-reduced-motion:reduce){.rays,.glow--e{animation:none}}
 </style>
 </head>
 <body>
-<canvas id="c" aria-hidden="true"></canvas>
+<div class="zoom" id="zoom"><div class="par" id="par">
+  <img id="art" alt="Gustave Doré tarzında bir gravür: solda ışık saçan cennet kapısı ve melekler, sağda alevler içinde cehennem ağzı ve iblisler; önde yol ayrımında duran cübbeli yolcular." decoding="async">
+  <div class="rays"></div><div class="glow glow--h"></div><div class="glow glow--e"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="shade shade--v"></div><div class="shade shade--l"></div><div class="shade shade--r"></div>
+</div></div>
 <div class="ui">
+  <a class="door" id="dL" href="v2/" data-k="cennet"><span><em>KAPI I</em><strong>CENNET</strong><u>İçeri gir</u></span></a>
+  <a class="door" id="dR" href="v1/" data-k="cehennem"><span><em>KAPI II</em><strong>CEHENNEM</strong><u>İçeri gir</u></span></a>
   <div class="mark" aria-label="Vintage Black Studio"><span aria-hidden="true">V<i>B</i></span></div>
   <div class="head"><small lang="en">Vintage Black Studio · Est. 2022</small><h1 aria-label="Kaderini seç"><span><b>KADERİNİ</b></span> <span><b>SEÇ</b></span></h1></div>
-  <a class="door" id="dL" href="v2/" data-k="cennet"><span><em>KAPI I</em><strong>CENNET</strong></span></a>
-  <a class="door" id="dR" href="v1/" data-k="cehennem"><span><em>KAPI II</em><strong>CEHENNEM</strong></span></a>
-  <div class="hint">Bir kapıdan geç</div>
+  <div class="hint">Bir kapı seç</div>
 </div>
 <div class="veil" id="veil"></div>
 
-<script id="fs" type="x-shader/x-fragment">
-#extension GL_OES_standard_derivatives : enable
-precision highp float;
-uniform vec2 uRes,uMouse,uOpen,uHov;
-uniform float uT,uZ,uSide,uCx,uW,uLF;
-const float YB=-0.74;const float YT=0.12;
-float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
-float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
-  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
-float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*noise(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}
-float archD(vec2 q,float w){return q.y<YT?max(abs(q.x)-w,YB-q.y):length(vec2(q.x,q.y-YT))-w;}
-// oyma çizgisi: çizgi kalınlığı tona göre açılır (ton=ışık)
-float hatch(float v,float t){float a=abs(fract(v)-.5)*2.,aa=clamp(fwidth(v)*1.6,.02,.6);return (1.-smoothstep(t-aa,t+aa,a))*step(.015,t);}
-void main(){
-  vec2 p0=(gl_FragCoord.xy-.5*uRes)/(.5*uRes.y);
-  float e=uZ*uZ*(3.-2.*uZ);
-  vec2 cT=vec2(uSide*uCx,uSide<0.?YT+uW*.1:YB+.34);
-  vec2 p=cT*e+p0*mix(1.,.06,e)+uMouse*.014*(1.-e);
-  float side=p.x<0.?-1.:1.;
-  vec2 q=p-vec2(side*uCx,0.);
-  float T=0.,v=0.,tint=0.;
-  if(side<0.){ // ---------- CENNET
-    float d=archD(q,uW),op=uOpen.x,hv=uHov.x;
-    if(d<0.){
-      float ax=abs(q.x);
-      if(ax>uW*op){ // kapı kanadı
-        float lx=(ax-uW*op)/(uW*(1.-op)+.001);
-        float pan=step(.1,abs(fract(q.y*2.3+.15)-.5))*step(.14,abs(lx-.5));
-        T=.16+.1*pan+.5*exp(-lx*5.)*(.45+.55*hv);v=q.x*uLF;
-      }else{
-        vec2 s=vec2(0.,YT+uW*.15),r=q-s;float len=length(r),ang=atan(r.x,-r.y);
-        float rays=.5+.5*sin(ang*24.+noise(vec2(ang*4.,uT*.12))*5.);
-        float glow=exp(-len*2.1);
-        float cl=fbm(vec2(q.x*4.+uT*.025,q.y*7.-uT*.01)),cm=smoothstep(.42,.7,cl)*smoothstep(.05,-.45,q.y);
-        T=(.4+.55*glow+.2*rays*(1.-.5*glow))*(.72+.4*hv);
-        v=ang*34.+len*5.;
-        if(cm>.5){T=max(T,.82);v=q.y*uLF+sin(q.x*16.+cl*7.)*1.4;}
-        tint=1.;
-      }
-    }else{
-      float fw=uW*.2;
-      if(d<fw){ // taş kemer
-        float blk=q.y>YT?abs(fract(atan(q.x,q.y-YT)*3.2)-.5):abs(fract(q.y*4.2)-.5);
-        T=(.3+.34*exp(-d*13.)*(.6+.6*hv))*(.5+.5*smoothstep(.02,.07,blk));v=d*uLF;
-      }else if(q.y<YB){ // basamaklar
-        float yy=YB-q.y,hw=uW*(1.2+yy*1.5);
-        if(abs(q.x)<hw){T=(.1+.55*exp(-yy*2.3)*exp(-abs(q.x)/(uW*1.25))*(.55+.65*hv))*(.5+.5*step(.4,fract(yy*10.)));v=p.y*uLF;}
-        else{T=.012+.05*fbm(p*5.)*exp(-yy*1.5);v=p.y*uLF+fbm(p*2.5)*2.;}
-      }else{ // duvar
-        T=.012+.3*exp(-d*3.4)*(.5+.75*hv)*(.75+.5*fbm(p*5.));v=p.y*uLF+fbm(p*2.5)*2.;
-      }
-    }
-  }else{ // ---------- CEHENNEM
-    float flick=.86+.14*sin(uT*6.3+noise(vec2(uT*2.,3.))*6.);
-    float d=archD(q,uW)+(fbm(q*5.+3.)-.5)*.11,op=uOpen.y,hv=uHov.y;
-    if(d<0.){
-      float ax=abs(q.x);
-      if(ax>uW*op){
-        float lx=(ax-uW*op)/(uW*(1.-op)+.001);
-        float riv=step(.1,length(fract(vec2(lx*2.,q.y*5.))-.5));
-        T=.05+.05*riv+.55*exp(-lx*6.)*flick*(.35+.65*hv);v=q.x*uLF;
-      }else{
-        float fl=fbm(vec2(q.x*4.5,q.y*2.6-uT*.85)+fbm(q*3.-uT*.3));
-        float hg=(q.y-YB)/(.5+.55*hv);
-        float F=smoothstep(.12,.72,fl*1.3-hg+.4*(1.-ax/uW));
-        T=(.02+.95*F+.14*exp(-(q.y-YB)*3.))*flick;v=(q.x+(fl-.5)*.16)*uLF*.9;tint=F;
-      }
-    }else{
-      float dd=max(d,0.);
-      T=.008+.34*exp(-dd*5.5)*flick*(.4+.8*hv)*(.4+1.*fbm(p*4.));
-      if(q.y<YB)T+=.2*exp(-(YB-q.y)*5.)*exp(-abs(q.x)/(uW*1.4))*flick*(.5+hv);
-      v=(p.x*.6+p.y)*uLF*.85+fbm(p*3.)*3.;
-    }
-  }
-  T*=smoothstep(.0,.16,abs(p.x));                      // iki dünya arasındaki karanlık
-  T*=1.-.4*dot(p0*vec2(.42,.7),p0*vec2(.42,.7));       // vinyet
-  vec2 dm=p-(uMouse+cT*e);T+=.14*exp(-dot(dm,dm)*7.)*(1.-e); // imleç feneri
-  float wo=smoothstep(.5,1.,uZ);
-  T=mix(T,uSide<0.?1.25:0.,wo);
-  float t=clamp(T,0.,1.);
-  float m=hatch(v,t*1.04);
-  if(t>.55)m=max(m,hatch((p.x-p.y)*.7*uLF,(t-.55)*2.1));
-  vec3 cream=vec3(.957,.961,.973);
-  vec3 col=cream*m;
-  if(side<0.)col*=mix(vec3(1.),vec3(1.,.97,.9),tint*uHov.x*.7);
-  else col*=mix(vec3(1.),vec3(1.,.7,.52),tint*(.15+.5*uHov.y));
-  gl_FragColor=vec4(col,1.);
-}
-</script>
 <script>
 (function(){
-  var body=document.body,cv=document.getElementById('c'),veil=document.getElementById('veil'),
-      dL=document.getElementById('dL'),dR=document.getElementById('dR'),YB=-.74,YT=.12,
-      st={hov:[0,0],open:[.13,.13],thov:[0,0],z:0,side:-1,mx:0,my:0,tmx:0,tmy:0,going:0,t0:0},
-      asp=1,cx=.5,w=.3,gl=null,U={},red=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  // Görsel ölçüleri ve kapıların görsel içindeki yeri (0-1). h_: cennet, e_: cehennem; üçüncü değer yarıçap (yüksekliğe oranla)
+  var ART={land:{src:'gates/land.jpg',w:2016,h:1128,h_:[.14,.27,.085],e_:[.84,.44,.1]},
+           port:{src:'gates/port.jpg',w:1128,h:2016,h_:[.23,.43,.075],e_:[.76,.55,.085]}};
+  var body=document.body,root=document.documentElement,zoom=document.getElementById('zoom'),par=document.getElementById('par'),art=document.getElementById('art'),
+      veil=document.getElementById('veil'),dL=document.getElementById('dL'),dR=document.getElementById('dR'),fx=document.getElementById('fx'),cx=fx.getContext('2d'),
+      red=matchMedia('(prefers-reduced-motion:reduce)').matches,cur=null,G={},going=0,hov=-1,mx=0,my=0,tx=0,ty=0,P=[],last=0;
 
-  function layout(){var W=innerWidth,H=innerHeight;asp=W/H;w=Math.min(.34,asp*.36);cx=Math.max(asp*.5,w+.04);
-    [[dL,-1],[dR,1]].forEach(function(a){var l=(a[1]*cx-w+asp)/(2*asp)*100,wd=w/asp*100,top=(1-(YT+w+1)/2)*100,bot=(YB+1)/2*100;
-      a[0].style.cssText='left:'+l+'%;width:'+wd+'%;top:'+top+'%;bottom:'+bot+'%'});
-    if(gl){var d=Math.min(devicePixelRatio||1,W<760?1.5:1.75);cv.width=Math.round(W*d);cv.height=Math.round(H*d);gl.viewport(0,0,cv.width,cv.height);U.px=5.2*d}}
+  function layout(){var W=innerWidth,H=innerHeight,a=W/H<1.05?ART.port:ART.land;
+    if(a!==cur){cur=a;art.src=a.src}
+    var s=Math.max(W/a.w,H/a.h),dw=a.w*s,dh=a.h*s,ox=(W-dw)/2,oy=(H-dh)/2;
+    G={hx:ox+a.h_[0]*dw,hy:oy+a.h_[1]*dh,hr:a.h_[2]*dh,ex:ox+a.e_[0]*dw,ey:oy+a.e_[1]*dh,er:a.e_[2]*dh,W:W,H:H};
+    var st=root.style;st.setProperty('--ox',ox+'px');st.setProperty('--oy',oy+'px');st.setProperty('--dw',dw+'px');st.setProperty('--dh',dh+'px');
+    ['hx','hy','hr','ex','ey','er'].forEach(function(k){st.setProperty('--'+k,G[k]+'px')});
+    var d=Math.min(devicePixelRatio||1,1.5);fx.width=Math.round(W*d);fx.height=Math.round(H*d);cx.setTransform(d,0,0,d,0,0)}
 
-  function initGL(){try{gl=cv.getContext('webgl',{antialias:false,alpha:false,powerPreference:'high-performance'});if(!gl)return 0;
-      if(!gl.getExtension('OES_standard_derivatives'))return 0;
-      function sh(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(o);return o}
-      var pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'));
-      gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,document.getElementById('fs').textContent));gl.linkProgram(pr);
-      if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw gl.getProgramInfoLog(pr);gl.useProgram(pr);
-      var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
-      var loc=gl.getAttribLocation(pr,'a');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-      ['uRes','uMouse','uOpen','uHov','uT','uZ','uSide','uCx','uW','uLF'].forEach(function(n){U[n]=gl.getUniformLocation(pr,n)});return 1
-    }catch(e){if(window.console)console.warn(e);gl=null;return 0}}
+  // parçacıklar: cehennemden yükselen korlar, cennete süzülen ışık zerreleri
+  function spawn(ember){var r=ember?G.er:G.hr,x0=ember?G.ex:G.hx,y0=ember?G.ey:G.hy;
+    P.push(ember?{e:1,x:x0+(Math.random()-.5)*r*1.6,y:y0+r*(.2+Math.random()*.6),vx:(Math.random()-.5)*14,vy:-(24+Math.random()*46),l:0,L:1.6+Math.random()*2.2,s:.8+Math.random()*1.7}
+                 :{e:0,x:x0+(Math.random()-.5)*r*4.5,y:y0+r*(1+Math.random()*3.5),vx:0,vy:-(8+Math.random()*16),l:0,L:3+Math.random()*3,s:.6+Math.random()*1.3,tx:x0})}
+  function frame(t){requestAnimationFrame(frame);var dt=Math.min(.05,(t-last)/1000||0);last=t;
+    mx+=(tx-mx)*.06;my+=(ty-my)*.06;if(!going)par.style.transform='translate('+(-mx*14).toFixed(2)+'px,'+(-my*10).toFixed(2)+'px) scale(1.05)';
+    if(red)return;
+    var re=(hov===1?46:9)*dt,rh=(hov===0?30:6)*dt;if(going){re=hov===1?90*dt:0;rh=hov===0?70*dt:0}
+    if(Math.random()<re)spawn(1);if(Math.random()<re-1)spawn(1);if(Math.random()<rh)spawn(0);
+    cx.clearRect(0,0,G.W,G.H);
+    for(var i=P.length-1;i>=0;i--){var p=P[i];p.l+=dt;if(p.l>p.L){P.splice(i,1);continue}
+      var k=p.l/p.L,a=Math.sin(Math.PI*k);
+      if(p.e){p.vx+=(Math.random()-.5)*40*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;cx.fillStyle='rgba(255,'+Math.round(150-90*k)+','+Math.round(60-50*k)+','+(.9*a).toFixed(3)+')'}
+      else{p.x+=(p.tx-p.x)*.25*dt+Math.sin(t/900+p.L*9)*6*dt;p.y+=p.vy*dt;cx.fillStyle='rgba(255,250,232,'+(.75*a).toFixed(3)+')'}
+      cx.beginPath();cx.arc(p.x,p.y,p.s*(p.e?1-.5*k:1),0,6.3);cx.fill()}}
 
-  function frame(t){requestAnimationFrame(frame);if(!gl)return;if(!st.t0)st.t0=t;var k=.09;
-    for(var i=0;i<2;i++){st.hov[i]+=(st.thov[i]-st.hov[i])*k;st.open[i]+=((st.thov[i]>0?1:.13)-st.open[i])*(k*.8)}
-    st.mx+=(st.tmx-st.mx)*.07;st.my+=(st.tmy-st.my)*.07;
-    if(st.going){var z=Math.min(1,(t-st.going)/1900);st.z=z;if(z>.72)veil.style.opacity=1;if(z>=1&&st.going>0){var h=st.href;st.going=-1;location.href=h}}
-    gl.uniform2f(U.uRes,cv.width,cv.height);gl.uniform2f(U.uMouse,st.mx,st.my);gl.uniform2f(U.uOpen,st.open[0],st.open[1]);gl.uniform2f(U.uHov,st.hov[0],st.hov[1]);
-    gl.uniform1f(U.uT,(t-st.t0)/1000);gl.uniform1f(U.uZ,st.z);gl.uniform1f(U.uSide,st.side);gl.uniform1f(U.uCx,cx);gl.uniform1f(U.uW,w);gl.uniform1f(U.uLF,cv.height*.5/U.px);
-    gl.drawArrays(gl.TRIANGLES,0,3)}
-
-  function hover(i,on){if(st.going)return;st.thov[i]=on?1:0;st.thov[1-i]=on?0:st.thov[1-i];
-    dL.classList.toggle('dim',st.thov[1]>0);dR.classList.toggle('dim',st.thov[0]>0)}
-  function choose(a,i,ev){if(ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.button)return;ev.preventDefault();if(st.going)return;
+  function setHov(i){hov=i;body.classList.toggle('hl',i===0);body.classList.toggle('hr',i===1);body.classList.toggle('hov',i>=0)}
+  function choose(a,i,ev){if(ev.metaKey||ev.ctrlKey||ev.shiftKey||ev.button)return;ev.preventDefault();if(going)return;going=1;
     try{sessionStorage.setItem('vbs-gate',a.dataset.k)}catch(e){}
-    st.href=a.getAttribute('href');st.side=i?1:-1;st.thov=[i?0:1,i?1:0];veil.style.background=i?'#000':'#F4F5F8';body.classList.add('go');
-    if(!gl||red){veil.style.opacity=1;setTimeout(function(){location.href=st.href},gl?450:250);return}
-    setTimeout(function(){st.going=performance.now()},st.hov[i]>.6?60:420)}
+    var href=a.getAttribute('href');setHov(i);veil.style.background=i?'#000':'#F4F5F8';
+    if(red){veil.style.opacity=1;setTimeout(function(){location.href=href},350);return}
+    setTimeout(function(){body.classList.add('go');
+      zoom.style.transformOrigin=(i?G.ex:G.hx)+'px '+(i?G.ey:G.hy)+'px';zoom.style.transform='scale(15)';
+      setTimeout(function(){veil.style.opacity=1},1350);setTimeout(function(){location.href=href},1950)},340)}
 
-  [[dL,0],[dR,1]].forEach(function(a){var el=a[0],i=a[1];
-    el.addEventListener('pointerenter',function(e){if(e.pointerType!=='touch')hover(i,1)});el.addEventListener('pointerleave',function(e){if(e.pointerType!=='touch')hover(i,0)});
-    el.addEventListener('focus',function(){hover(i,1)});el.addEventListener('blur',function(){hover(i,0)});
+  [[dL,0],[dR,1]].forEach(function(p){var el=p[0],i=p[1];
+    el.addEventListener('pointerenter',function(e){if(e.pointerType!=='touch'&&!going)setHov(i)});
+    el.addEventListener('pointerleave',function(e){if(e.pointerType!=='touch'&&!going)setHov(-1)});
+    el.addEventListener('focus',function(){if(!going)setHov(i)});el.addEventListener('blur',function(){if(!going)setHov(-1)});
     el.addEventListener('click',function(e){choose(el,i,e)})});
-  addEventListener('pointermove',function(e){st.tmx=(e.clientX/innerWidth*2-1)*asp;st.tmy=-(e.clientY/innerHeight*2-1)},{passive:true});
+  addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1},{passive:true});
   addEventListener('resize',layout);
-  addEventListener('pageshow',function(e){if(e.persisted){st.going=0;st.z=0;st.thov=[0,0];veil.style.opacity=0;body.classList.remove('go');dL.classList.remove('dim');dR.classList.remove('dim')}});
-  if(!initGL())body.classList.add('nogl');
-  layout();requestAnimationFrame(frame);setTimeout(function(){body.classList.add('rdy')},60);
+  addEventListener('pageshow',function(e){if(!e.persisted)return;going=0;setHov(-1);body.classList.remove('go');zoom.style.transform='';veil.style.opacity=0});
+  layout();
+  function ready(){body.classList.add('rdy')}
+  if(art.complete&&art.naturalWidth)ready();else{art.addEventListener('load',ready);art.addEventListener('error',ready);setTimeout(ready,2500)}
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>
