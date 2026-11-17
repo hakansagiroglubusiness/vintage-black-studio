@@ -193,10 +193,35 @@ section{position:relative}
   .slides>div{transform:none!important;transition:opacity 1.4s ease!important}
   html{scroll-behavior:auto}
 }
-/* 10 — mürekkep damlası: kaydırdıkça iner */
-.drip{position:fixed;top:calc(var(--logo) + 26px);bottom:26px;right:max(3px,calc(var(--g)/2 - var(--dw)/2));width:var(--dw);z-index:60;pointer-events:none;mix-blend-mode:difference;--dw:clamp(11px,.95vw,16px)}
-.drip i{position:absolute;left:50%;top:0;width:1px;margin-left:-.5px;height:1px;background:#fff;opacity:.6;transform-origin:50% 0}
-.drip svg{position:absolute;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);fill:#fff;transform-origin:50% 0;will-change:transform}
+/* 10 — mürekkep damlası: boşluklardan süzülerek sayfayı dolaşır, arkasında ince bir iz bırakır */
+.drip{position:fixed;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;mix-blend-mode:difference;--dw:clamp(11px,.95vw,16px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
+.drip.on{opacity:1}
+.drip svg{display:block;width:100%;height:100%;fill:#fff}
+.drip b{position:absolute;left:50%;top:68%;width:var(--dw);height:var(--dw);margin:calc(var(--dw)/-2) 0 0 calc(var(--dw)/-2);border:1px solid #fff;border-radius:50%;opacity:0}
+.drip.end b{animation:ring 1.8s var(--ease) infinite}
+.drip.end b+b{animation-delay:.6s}
+@keyframes ring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(5);opacity:0}}
+.trail{position:absolute;left:0;top:0;width:100%;height:0;z-index:4;pointer-events:none;overflow:visible}
+.trail path{fill:none;stroke:rgba(244,245,248,.42);stroke-width:1}
+/* 11 — süslemeler: maske olarak basılır, kaydırdıkça içinden yeşil bir parıltı geçer */
+.orn{display:block;aspect-ratio:var(--ar);background:linear-gradient(115deg,var(--cream) 0 41%,var(--green-hi) 50%,var(--cream) 59% 100%) calc(var(--sp,0)*100%) 0/340% 100%;
+  -webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;transform:translateY(calc((.5 - var(--sp,.5))*var(--par,26px)));
+  clip-path:inset(0 0 100% 0);transition:clip-path 1.7s var(--ease)}
+.ornw.in .orn{clip-path:inset(0)}
+.ornw--div{width:clamp(58px,6.6vw,104px);margin:calc(clamp(90px,13vw,190px)*-.42) auto clamp(30px,4vw,62px)}
+.ornw--sig{width:clamp(128px,15vw,230px);margin:clamp(34px,4vw,60px) 0 0 auto}
+.ornw--sig .orn{clip-path:inset(0 100% 0 0);--par:0px}
+.panel__orn{position:absolute;left:50%;top:50%;width:min(86%,520px);aspect-ratio:1.786;background:var(--black);-webkit-mask:url(o2.png) center/contain no-repeat;mask:url(o2.png) center/contain no-repeat;
+  opacity:0;transform:translate(-50%,-50%) scale(.8) rotate(-9deg);transition:opacity 1.2s var(--ease) .2s,transform 1.6s var(--ease) .2s;pointer-events:none}
+.menu-open .panel__orn{opacity:.085;transform:translate(-50%,-50%) scale(1) rotate(-4deg)}
+.panel>*:not(.panel__orn){position:relative}
+/* 12 — randevu adımları */
+.book{list-style:none;padding:0;margin:clamp(54px,6vw,90px) auto 0;max-width:52ch}
+.book li{padding:0 0 26px}
+.book li+li::before{content:"";display:block;width:5px;height:5px;background:var(--cream);transform:rotate(45deg);margin:0 auto 26px;opacity:.75}
+.book b{display:block;font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.08em;opacity:.7}
+.book h3{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin:6px 0 8px}
+.book p{font-size:clamp(15px,1.15vw,18px);line-height:1.45;opacity:.84;margin:0}
 </style>
 </head>
 <body>
@@ -206,7 +231,8 @@ section{position:relative}
   <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="panel">Menu</button>
 </header>
 
-<div class="drip" id="drip" aria-hidden="true"><i></i><svg viewBox="0 0 20 30"><path d="M10 0C10 9 0 14 0 20a10 10 0 0 0 20 0C20 14 10 9 10 0Z"/></svg></div>
+<svg class="trail" id="trail" aria-hidden="true"><path/></svg>
+<div class="drip" id="drip" aria-hidden="true"><svg viewBox="0 0 20 30"><path d="M10 0C10 9 0 14 0 20a10 10 0 0 0 20 0C20 14 10 9 10 0Z"/></svg><b></b><b></b></div>
 <div class="scrim" id="scrim"></div>
 <aside class="panel" id="panel" aria-label="Menü">
   <div class="panel__top"><span class="mark disp" aria-label="Vintage Black Studio"><span aria-hidden="true">V<span class="alt">B</span></span></span><button class="pill" id="menuClose">Kapat</button></div>
@@ -217,6 +243,7 @@ section{position:relative}
     <a href="#sss" style="--i:3"><span>Sorular<sup>03</sup></span></a>
     <a href="#iletisim" style="--i:4"><span>İletişi<span class="alt">M</span><sup>04</sup></span></a>
   </nav>
+  <i class="panel__orn" aria-hidden="true"></i>
   <div class="panel__foot mono" lang="en"><span>Est. 2022</span><a href="https://www.instagram.com/vintageblackstudio/" target="_blank" rel="noopener">Instagram</a></div>
 </aside>
 
@@ -248,9 +275,11 @@ section{position:relative}
       <p class="fade rv" style="--d:2">Stüdyo Bursa, Nilüfer'de: 29 Ekim Mahallesi, Muammer Aksoy Caddesi No: 83, Time Özlüce Binası.</p>
     </div>
     <p class="cta fade rv"><b>Dövme yaptırmak mı istiyorsun?</b><span class="mono"><a class="ul" href="#iletisim">Yaz</a> ve randevunu oluştur</span></p>
+    <div class="ornw ornw--sig rv" aria-hidden="true"><i class="orn" style="--m:url(o2.png);--ar:1.786"></i></div>
   </section>
 
   <section class="sec work" id="isler">
+    <div class="ornw ornw--div rv" aria-hidden="true"><i class="orn" style="--m:url(o3.png);--ar:.618"></i></div>
     <h2 class="disp h2 rv">
       <span class="ln"><span>SEÇME<span class="num">(02)</span></span></span>
       <span class="ln" style="--d:1"><span>İŞLE<span class="alt">R</span></span></span>
@@ -274,8 +303,17 @@ section{position:relative}
   </section>
 
   <section class="sec contact" id="iletisim">
+    <div class="ornw ornw--div rv" aria-hidden="true"><i class="orn" style="--m:url(o1.png);--ar:.662"></i></div>
     <h2 class="disp h2 rv"><span class="ln"><span>İLETİŞİM<span class="num">(04)</span></span></span></h2>
     <p class="contact__lead fade rv">Aklında bir dövme mi var? Birlikte tasarlayalım.</p>
+    <ol class="book">
+      <li class="fade rv"><b>I</b><h3>Sen</h3><p>Adın, yaşın, yaşadığın şehir ve varsa Instagram profilin.</p></li>
+      <li class="fade rv"><b>II</b><h3>Fikrin</h3><p>Konseptini, dövmeyi istediğin bölgeyi ve yaklaşık boyutu anlat. Fikrinin arkasındaki anlamı ya da ilhamı da paylaşabilirsin.</p></li>
+      <li class="fade rv"><b>III</b><h3>Referanslar</h3><p>Aklındakini anlatmaya yardımcı olacak referans görselleri, eskizleri, dokuları ya da metinleri ekle.</p></li>
+      <li class="fade rv"><b>IV</b><h3>Uygunluk</h3><p>Tercih ettiğin tarihleri yaz. İstanbul ya da Bursa'ya mı geleceğini, yoksa başka bir şehirde misafir seans mı düşündüğünü belirt.</p></li>
+      <li class="fade rv"><b>V</b><h3>Süreç</h3><p>Her talep tek tek incelenir. Fikrin stüdyonun işleriyle örtüşüyorsa tasarım, fiyat ve uygun tarihler e-posta üzerinden konuşulur.</p></li>
+      <li class="fade rv"><b>VI</b><h3>Kapora ve onay</h3><p>Detaylarda anlaşıldıktan sonra randevuyu kesinleştirmek için iadesiz bir kapora alınır. Kalan tutar seans günü ödenir.</p></li>
+    </ol>
     <p class="contact__note fade rv">Randevu, fiyat ve tasarım soruları için yaz:</p>
     <dl class="fade rv">
       <div><dt>Instagram</dt><dd><a class="ul" href="https://www.instagram.com/vintageblackstudio/" target="_blank" rel="noopener">@vintageblackstudio</a></dd></div>
@@ -324,8 +362,8 @@ section{position:relative}
   setInterval(function(){sl[si].classList.remove('on');si=(si+1)%sl.length;sl[si].classList.add('on')},2600);
 
   // 7 — SSS
-  var faqs=['Kapora politikanız nedir?','Stüdyo nerede?','Nasıl randevu alırım?','Dövme bakımı nasıl yapılır?','Tasarımı ne zaman görürüm?','Randevudan önce ne yapmalıyım?'];
-  $('#acc').innerHTML=faqs.map(function(q,i){return '<div class="acc__item"><button aria-expanded="false" aria-controls="a'+i+'"><span>'+q+'</span><span class="pl" aria-hidden="true"></span></button><div class="acc__body" id="a'+i+'"><div><p>[Yanıt stüdyodan gelecek bilgiyle doldurulacak.]</p></div></div></div>'}).join('');
+  var faqs=[['Kapora politikanız nedir?','Detaylarda anlaşıldıktan sonra randevuyu kesinleştirmek için iadesiz bir kapora alınır. Kalan tutar seans günü ödenir.'],['Stüdyo nerede?','Bursa, Nilüfer: Time Özlüce Binası, 29 Ekim Mah., Muammer Aksoy Cd. No: 83.'],['Nasıl randevu alırım?','E-posta ya da Instagram üzerinden yaz. Mesajında kendini kısaca tanıt; fikrini, istediğin bölgeyi ve yaklaşık boyutu anlat, varsa referanslarını ekle ve uygun olduğun tarihleri belirt. Her talep tek tek incelenir.'],['Dövme bakımı nasıl yapılır?',''],['Tasarımı ne zaman görürüm?',''],['Randevudan önce ne yapmalıyım?','']];
+  $('#acc').innerHTML=faqs.map(function(q,i){return '<div class="acc__item"><button aria-expanded="false" aria-controls="a'+i+'"><span>'+q[0]+'</span><span class="pl" aria-hidden="true"></span></button><div class="acc__body" id="a'+i+'"><div><p>'+(q[1]||'[Yanıt stüdyodan gelecek bilgiyle doldurulacak.]')+'</p></div></div></div>'}).join('');
   $('#acc').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var o=b.getAttribute('aria-expanded')==='true';
     $$('#acc button').forEach(function(x){x.setAttribute('aria-expanded','false')});b.setAttribute('aria-expanded',o?'false':'true')});
 
@@ -349,16 +387,60 @@ section{position:relative}
   $$('.cat').forEach(function(b){b.addEventListener('click',function(){openGal(b)})});
   $('#galClose').addEventListener('click',closeGal);
   document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;if(gal.classList.contains('open'))closeGal();else if(body.classList.contains('menu-open'))menu(false)});
-  // 10 — mürekkep damlası: konum = kaydırma oranı, hızla uzar, durunca yaylanıp toparlanır
-  (function(){var d=$('#drip'),ln=$('i',d),dr=$('svg',d),y=0,s=1,v=0,ly=scrollY,raf=0;
-    function tick(){raf=0;var max=document.documentElement.scrollHeight-innerHeight,H=d.clientHeight-dr.clientHeight,
-      t=max>0?Math.min(1,Math.max(0,scrollY/max))*H:0,dy=scrollY-ly;ly=scrollY;
-      y+=(t-y)*.22;var ts=1+Math.min(Math.abs(dy)/55,.85);v+=(ts-s)*.2;v*=.72;s+=v;
-      ln.style.transform='scaleY('+Math.max(1,y)+')';
-      dr.style.transform='translateY('+y+'px) scale('+(1/Math.sqrt(s))+','+s+')';
-      if(Math.abs(t-y)>.3||Math.abs(s-1)>.004||Math.abs(v)>.004)raf=requestAnimationFrame(tick)}
+  // 10 — mürekkep damlası
+  // Rota: sayfadaki yazı ve görsellerin kutuları ölçülür, güvenli pay kadar şişirilir; damla kalan boşluklardan
+  // geçer. Boşluk yoksa küçülüp kenar şeridinden süzülür. Konum = kaydırma oranı.
+  (function(){var d=$('#drip'),tr=$('#trail'),tp=$('path',tr),ST=16,X=[],K=[],LEN=[],y0=0,y1=0,yd=-1,s=1,v=0,ly=scrollY,raf=0,tm=0;
+    function build(){var W=document.documentElement.clientWidth,H=document.documentElement.scrollHeight,sx=scrollX,sy=scrollY,
+      mob=W<760,M=mob?12:24,V=mob?16:30,dw=d.offsetWidth,dh=d.offsetHeight,g=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--g'))||16,
+      obs=[],cache=new Map();
+      function off(el){var o=cache.get(el);if(o)return o;o=[0,0];if(el&&el!==document.body){var p=off(el.parentElement),t=getComputedStyle(el).transform;
+        o=[p[0],p[1]];if(t&&t!=='none'){var m=new DOMMatrixReadOnly(t);o[0]+=m.m41;o[1]+=m.m42}}cache.set(el,o);return o}
+      function add(r,o){if(r.width<2||r.height<2)return;obs.push([r.left+sx-o[0],r.top+sy-o[1],r.right+sx-o[0],r.bottom+sy-o[1]])}
+      var hero=$('.hero'),meta=$('.hero__meta'),mdy=0;
+      if(hero&&meta){var hr=hero.getBoundingClientRect(),mr=meta.getBoundingClientRect();mdy=mr.bottom-hr.bottom}
+      var skip='.top,.panel,.gal,.drip,.trail,.scrim,#acc,.faq__side,script,style',w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n,rg=document.createRange();
+      while(n=w.nextNode()){if(!/\S/.test(n.nodeValue))continue;var pe=n.parentElement;if(!pe||pe.closest(skip))continue;
+        var o=off(pe);if(pe.closest('.hero__meta'))o=[o[0],o[1]+mdy];rg.selectNodeContents(n);[].forEach.call(rg.getClientRects(),function(r){add(r,o)})}
+      $$('.slides,.about__img,.strip,.arch,.plate img,#acc,.faq__side,.orn,main p,.book li,.contact dl').forEach(function(el){add(el.getBoundingClientRect(),off(el.parentElement))});
+      var fq=$('.faq'),fs=$('.faq__side');if(fq&&fs&&getComputedStyle(fs).position==='sticky'){var a=fq.getBoundingClientRect(),b=fs.getBoundingClientRect();add({left:b.left,right:b.right,top:a.top,bottom:a.bottom,width:b.width,height:a.height},[0,0])}
+      y0=($('.top')?$('.top').offsetHeight:60)+18;y1=H-dh-34;var N=Math.max(2,Math.ceil((y1-y0)/ST)+1),LO=[],HI=[],T=[],e0=dw/2+3,e1=W-dw/2-3,
+        C=Math.max(12,Math.round(W/12)),cw=(e1-e0)/(C-1),cs=Math.max(1,Math.round(3*ST/cw)),F=new Uint8Array(N*C),BP=new Int16Array(N*C),prev=new Float32Array(C),cur=new Float32Array(C);
+      // her satırda serbest sütunlar
+      for(var i=0;i<N;i++){var y=y0+i*ST,bl=[];
+        for(var j=0;j<obs.length;j++){var r=obs[j];if(r[1]-V<y+dh&&r[3]+V>y)bl.push([r[0]-M-dw/2,r[2]+M+dw/2])}
+        for(var q=0;q<C;q++){var x=e0+q*cw,ok=1;for(j=0;j<bl.length;j++)if(x>bl[j][0]&&x<bl[j][1]){ok=0;break}F[i*C+q]=ok}}
+      // en ucuz rota: serbest alanda dolaş, yatay hız sınırlı; boşluk yoksa kenar şeridi (dar geçiş)
+      function node(i,q){var x=e0+q*cw,pref=W*.5+W*.36*Math.sin((y0+i*ST)/(mob?520:760)+.9),dv=Math.abs(x-pref)/W;
+        return F[i*C+q]?dv:(q===0||q===C-1?.7+dv*.2:1e6)}
+      for(q=0;q<C;q++)prev[q]=node(0,q);
+      for(i=1;i<N;i++){for(q=0;q<C;q++){var bst=1e9,bk=q;for(var k=Math.max(0,q-cs);k<=Math.min(C-1,q+cs);k++){var cst=prev[k]+.03*Math.abs(q-k);if(cst<bst){bst=cst;bk=k}}cur[q]=bst+node(i,q);BP[i*C+q]=bk}
+        var tmp=prev;prev=cur;cur=tmp}
+      var qb=0;for(q=1;q<C;q++)if(prev[q]<prev[qb])qb=q;X=[];
+      for(i=N-1;i>=0;i--){var fr=F[i*C+qb];T[i]=fr?0:1;X[i]=e0+qb*cw;var l=qb,h=qb;if(fr){while(l>0&&F[i*C+l-1])l--;while(h<C-1&&F[i*C+h+1])h++}LO[i]=e0+l*cw;HI[i]=e0+h*cw;if(i)qb=BP[i*C+qb]}
+      function sm(A,R){var B=A.slice();for(var i=0;i<N;i++){var a=0,c=0;for(var k=-R;k<=R;k++){var q=A[Math.min(N-1,Math.max(0,i+k))],wg=R+1-Math.abs(k);a+=q*wg;c+=wg}B[i]=a/c}return B}
+      for(var it=0;it<3;it++){X=sm(X,4);for(i=0;i<N;i++)X[i]=Math.min(HI[i],Math.max(LO[i],X[i]))}X=sm(X,1);
+      K=sm(T.map(function(t){return t?.42:1}),6);
+      var pts='M'+X[0].toFixed(1)+' '+y0;LEN=[0];for(i=1;i<N;i++){pts+='L'+X[i].toFixed(1)+' '+(y0+i*ST);LEN[i]=LEN[i-1]+Math.hypot(X[i]-X[i-1],ST)}
+      tr.style.height=H+'px';tr.setAttribute('viewBox','0 0 '+W+' '+H);tr.setAttribute('width',W);tp.setAttribute('d',pts);tp.style.strokeDasharray=LEN[N-1]+' '+(LEN[N-1]+10);
+      d.classList.add('on');kick()}
+    function at(A,f){var i=Math.max(0,Math.min(A.length-2,Math.floor(f))),t=Math.max(0,Math.min(1,f-i));return A[i]+(A[i+1]-A[i])*t}
+    function tick(){raf=0;if(X.length<2)return;var max=document.documentElement.scrollHeight-innerHeight,p=max>0?Math.min(1,Math.max(0,scrollY/max)):0,
+      t=y0+(y1-y0)*p,dy=scrollY-ly;ly=scrollY;if(yd<0)yd=t;yd+=(t-yd)*.2;
+      var ts=1+Math.min(Math.abs(dy)/55,.8);v+=(ts-s)*.2;v*=.72;s+=v;
+      var f=(yd-y0)/ST,x=at(X,f),k=at(K,f),ang=Math.atan2(at(X,f+1.5)-at(X,f-1.5),ST*3)*-1;
+      d.style.transform='translate('+(x-d.offsetWidth/2)+'px,'+(yd-scrollY)+'px) rotate('+ang+'rad) scale('+(k/Math.sqrt(s))+','+(k*s)+')';
+      tp.style.strokeDashoffset=LEN[LEN.length-1]-at(LEN,f);d.classList.toggle('end',p>.992);
+      if(Math.abs(t-yd)>.3||Math.abs(s-1)>.004||Math.abs(v)>.004)raf=requestAnimationFrame(tick)}
     function kick(){if(!raf)raf=requestAnimationFrame(tick)}
-    addEventListener('scroll',kick,{passive:true});addEventListener('resize',kick);kick()})();
+    function later(){clearTimeout(tm);tm=setTimeout(build,180)}
+    addEventListener('scroll',kick,{passive:true});addEventListener('resize',later);addEventListener('load',later);
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(later);
+    if(window.ResizeObserver)new ResizeObserver(later).observe(document.body);later()})();
+  // 11 — süslemelerde kaydırmaya bağlı parıltı
+  (function(){var os=$$('.orn'),r=0;function up(){r=0;os.forEach(function(o){var b=o.getBoundingClientRect();if(b.bottom<-80||b.top>innerHeight+80)return;
+      o.style.setProperty('--sp',Math.min(1,Math.max(0,1-(b.top+b.height/2)/innerHeight)).toFixed(3))})}
+    addEventListener('scroll',function(){if(!r)r=requestAnimationFrame(up)},{passive:true});up()})();
 })();
 </script>
 </body>
