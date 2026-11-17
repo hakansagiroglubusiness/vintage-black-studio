@@ -39,14 +39,6 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
 /* geçiş */
 .go .glow--h,.go .glow--e{opacity:1!important}
 #smoke{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
-/* açılışta arkamızdan çıkıp karşıdaki dağlara doğru küçülerek uçan yaratık */
-#fly{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-#fly .cr{position:absolute;left:0;top:0;width:400px;height:297px;margin:-120px 0 0 -200px;perspective:900px;will-change:transform,opacity;opacity:0}
-#fly .cr i{position:absolute;top:0;width:50%;height:100%;background:url(gates/creature.webp) 0 0/200% 100% no-repeat;filter:brightness(.86) contrast(1.08);animation:flapL .58s ease-in-out infinite alternate;backface-visibility:hidden}
-#fly .cr .l{left:0;transform-origin:100% 40%}
-#fly .cr .r{right:0;background-position:100% 0;transform-origin:0 40%;animation-name:flapR}
-@keyframes flapL{from{transform:rotateY(-10deg)}to{transform:rotateY(50deg)}}
-@keyframes flapR{from{transform:rotateY(10deg)}to{transform:rotateY(-50deg)}}
 
 /* arayüz */
 .ui{position:fixed;inset:0;transition:opacity .5s}
@@ -81,7 +73,6 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
   <canvas id="fx" aria-hidden="true"></canvas>
   <div class="shade shade--v"></div><div class="shade shade--l"></div><div class="shade shade--r"></div>
 </div></div>
-<div id="fly" aria-hidden="true"></div>
 <div class="ui">
   <a class="door" id="dL" href="v2/" data-k="cennet"><span><em>KAPI I</em><strong>CENNET</strong><u>İçeri gir</u></span></a>
   <a class="door" id="dR" href="v1/" data-k="cehennem"><span><em>KAPI II</em><strong>CEHENNEM</strong><u>İçeri gir</u></span></a>
@@ -117,7 +108,7 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
     P.push(ember?{e:1,x:x0+(Math.random()-.5)*r*1.6,y:y0+r*(.2+Math.random()*.6),vx:(Math.random()-.5)*14,vy:-(24+Math.random()*46),l:0,L:1.6+Math.random()*2.2,s:.8+Math.random()*1.7}
                  :{e:0,x:x0+(Math.random()-.5)*r*4.5,y:y0+r*(1+Math.random()*3.5),vx:0,vy:-(8+Math.random()*16),l:0,L:3+Math.random()*3,s:.6+Math.random()*1.3,tx:x0})}
   function frame(t){requestAnimationFrame(frame);var dt=Math.min(.05,(t-last)/1000||0);last=t;
-    mx+=(tx-mx)*.06;my+=(ty-my)*.06;if(gz)pass(t);if(CR.length)flyers(t);if(!going)par.style.transform='translate('+(-mx*14).toFixed(2)+'px,'+(-my*10).toFixed(2)+'px) scale(1.05)';
+    mx+=(tx-mx)*.06;my+=(ty-my)*.06;if(gz)pass(t);if(!going)par.style.transform='translate('+(-mx*14).toFixed(2)+'px,'+(-my*10).toFixed(2)+'px) scale(1.05)';
     if(red)return;
     var re=(hov===1?46:9)*dt,rh=(hov===0?30:6)*dt;if(going){re=hov===1?90*dt:0;rh=hov===0?70*dt:0}
     if(Math.random()<re)spawn(1);if(Math.random()<re-1)spawn(1);if(Math.random()<rh)spawn(0);
@@ -128,17 +119,6 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
       else{p.x+=(p.tx-p.x)*.25*dt+Math.sin(t/900+p.L*9)*6*dt;p.y+=p.vy*dt;cx.fillStyle='rgba(255,250,232,'+(.75*a).toFixed(3)+')'}
       cx.beginPath();cx.arc(p.x,p.y,p.s*(p.e?1-.5*k:1),0,6.3);cx.fill()}}
 
-  // yaratık: kameranın arkasından (çok büyük ve bulanık) çıkar, karşıdaki dağlara doğru giderek küçülür ve kaybolur.
-  // Perspektif: konum, ölçekle birlikte kaçış noktasına yaklaşır.
-  var FLY=document.getElementById('fly'),CR=[];
-  function release(){if(red||CR.length)return;var W=B.W,H=B.H,m=Math.max(W,H),el=document.createElement('div');el.className='cr';el.innerHTML='<i class="l"></i><i class="r"></i>';FLY.appendChild(el);
-    CR.push({el:el,t0:performance.now()+350,D:9500,sx:W*.56,sy:H*1.12,S0:m/400*1.9,S1:m/400*.018,sw:W*.11,ph:1.2})}
-  function flyers(t){for(var i=CR.length-1;i>=0;i--){var c=CR[i],u=(t-c.t0)/c.D;if(u<0)continue;if(u>=1){c.el.remove();CR.splice(i,1);continue}
-      var d=Math.pow(u,.92),S=c.S0*Math.pow(c.S1/c.S0,d),k=S/c.S0,tx=G.mx,ty=G.my,
-        x=tx+(c.sx-tx)*k+Math.sin(u*4.2+c.ph)*c.sw*Math.sqrt(k)*(1-u),y=ty+(c.sy-ty)*k,ang=Math.cos(u*4.2+c.ph)*.16*(1-u);
-      c.el.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px) rotate('+ang.toFixed(3)+'rad) scale('+S.toFixed(4)+')';
-      c.el.style.opacity=(Math.min(1,u*12)*Math.min(1,(1-u)*5)).toFixed(3);
-      c.el.style.filter=S>1.1?'blur('+Math.min(6,(S-1.1)*2.2).toFixed(1)+'px)':''}}
   function setHov(i){hov=i;body.classList.toggle('hl',i===0);body.classList.toggle('hr',i===1);body.classList.toggle('hov',i>=0)}
   // geçiş: kapıya doğru yakınlaş; sonunda ekran kapının rengine (cennet açık, cehennem siyah) döner ve siteye geçilir
   function pass(t){if(!gz.t0)gz.t0=t;var k=Math.min(1,(t-gz.t0)/2000),W=B.W,H=B.H;
@@ -161,7 +141,7 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
   addEventListener('resize',layout);
   addEventListener('pageshow',function(e){if(!e.persisted)return;going=0;gz=null;setHov(-1);body.classList.remove('go');sx.clearRect(0,0,sm.width,sm.height);layout()});
   layout();
-  function ready(){if(body.classList.contains('rdy'))return;body.classList.add('rdy');setTimeout(release,500)}
+  function ready(){if(body.classList.contains('rdy'))return;body.classList.add('rdy')}
   if(art.complete&&art.naturalWidth)ready();else{art.addEventListener('load',ready);art.addEventListener('error',ready);setTimeout(ready,2500)}
   requestAnimationFrame(frame);
 })();
