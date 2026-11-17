@@ -194,10 +194,10 @@ section{position:relative}
   html{scroll-behavior:auto}
 }
 /* 10 — mürekkep damlası: boşluklardan süzülerek sayfayı dolaşır, arkasında ince bir iz bırakır */
-.drip{position:fixed;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;mix-blend-mode:difference;--dw:clamp(11px,.95vw,16px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
+.drip{position:fixed;left:0;top:0;width:var(--dw);height:calc(var(--dw)*1.5);z-index:60;pointer-events:none;--dw:clamp(12px,1vw,17px);transform-origin:50% 0;will-change:transform;opacity:0;transition:opacity .6s}
 .drip.on{opacity:1}
-.drip svg{display:block;width:100%;height:100%;fill:#fff}
-.drip.on.end{opacity:0;transition:opacity .8s .15s}
+.drip svg{display:block;width:100%;height:100%;overflow:visible}
+.drip.on.end{opacity:0;transition:opacity .1s}
 .ch{transition:color .7s var(--ease)}.ch.ink{color:var(--green-hi)}
 .orn::after{content:"";position:absolute;inset:0;background:var(--green-hi);opacity:0;transition:opacity 1s var(--ease)}.orn.ink::after{opacity:1}
 .trail{position:fixed;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
@@ -230,7 +230,7 @@ section{position:relative}
 </header>
 
 <canvas class="trail" id="trail" aria-hidden="true"></canvas>
-<div class="drip" id="drip" aria-hidden="true"><svg viewBox="0 0 20 30"><path d="M10 0C10 9 0 14 0 20a10 10 0 0 0 20 0C20 14 10 9 10 0Z"/></svg></div>
+<div class="drip" id="drip" aria-hidden="true"><svg viewBox="0 0 20 30"><defs><radialGradient id="dg" cx=".42" cy=".6" r=".62"><stop offset="0" stop-color="#eafaf5" stop-opacity=".05"/><stop offset=".7" stop-color="#bfe6da" stop-opacity=".2"/><stop offset="1" stop-color="#e9fbf6" stop-opacity=".62"/></radialGradient></defs><path d="M10 .6C10 9 .7 14 .7 20a9.3 9.3 0 0 0 18.6 0C19.3 14 10 9 10 .6Z" fill="url(#dg)" stroke="rgba(240,252,248,.8)" stroke-width=".8"/><ellipse cx="6.4" cy="18.2" rx="1.7" ry="3" fill="#fff" opacity=".85" transform="rotate(18 6.4 18.2)"/><circle cx="13.6" cy="24" r="1" fill="#fff" opacity=".5"/></svg></div>
 <div class="scrim" id="scrim"></div>
 <aside class="panel" id="panel" aria-label="Menü">
   <div class="panel__top"><span class="mark disp" aria-label="Vintage Black Studio"><span aria-hidden="true">V<span class="alt">B</span></span></span><button class="pill" id="menuClose">Kapat</button></div>
@@ -369,10 +369,10 @@ section{position:relative}
   // Sağ kenardan iner → "Stüdyo Hakkında" başlığında sola dönüp karşı kenara geçer → sol kenardan iner →
   // imzaya gider → altındaki süslemeye gider → ortadan "Seçme İşler" başlığına iner ve orada biter.
   // Dokunduğu harfler ve süslemeler vurgu rengine döner; yukarı çıkınca geri alınır.
-  (function(){var d=$('#drip'),tr=$('#trail'),cx=tr.getContext('2d'),P=[],B=[],lf=-1,LIFE=2600,dpr=1,SP=6,PX=[],PY=[],PK=[],S=[],TG=[],f=-1,s=1,v=0,ly=scrollY,raf=0,tm=0,lui=-9,
+  (function(){var d=$('#drip'),tr=$('#trail'),cx=tr.getContext('2d'),P=[],B=[],RL=null,imp=0,DW=14,lf=-1,LIFE=2600,dpr=1,SP=6,PX=[],PY=[],PK=[],S=[],TG=[],f=-1,s=1,v=0,ly=scrollY,raf=0,tm=0,lui=-9,
       LN='.about__head .ln>span,.work .h2 .ln>span',de=document.documentElement;
     $$('.about__head,.work .h2').forEach(function(h){h.setAttribute('aria-label',$$('.ln>span',h).map(function(l){return l.textContent.replace(/\(\d+\)/,'')}).join(' '))});
-    $$(LN).forEach(function(sp){[].slice.call(sp.childNodes).forEach(function(n){
+    $$(LN+',.work__lead').forEach(function(sp){[].slice.call(sp.childNodes).forEach(function(n){
       if(n.nodeType===3){var fr=document.createDocumentFragment();n.nodeValue.split('').forEach(function(c){var e=document.createElement('span');e.className='ch';e.textContent=c;fr.appendChild(e)});sp.replaceChild(fr,n)}
       else if(n.nodeType===1)n.classList.add('ch')})});
     function sm(A,R){var n=A.length,B=A.slice();for(var i=0;i<n;i++){var a=0,c=0;for(var k=-R;k<=R;k++){var q=A[Math.min(n-1,Math.max(0,i+k))],w=R+1-Math.abs(k);a+=q*w;c+=w}B[i]=a/c}return B}
@@ -383,8 +383,8 @@ section{position:relative}
         o=[q[0],q[1]];if(t&&t!=='none'){var m=new DOMMatrixReadOnly(t);o[0]+=m.m41;o[1]+=m.m42}}cache.set(el,o);return o}
       function rc(el){var r=el.getBoundingClientRect(),o=off(el);return {l:r.left+sx-o[0],t:r.top+sy-o[1],r:r.right+sx-o[0],b:r.bottom+sy-o[1]}}
       var top=$('.top'),y0=(top?top.offsetHeight:60)+18,edgeR=W-Math.max(dw/2+3,g/2),edgeL=W-edgeR,inner=W-Math.max(mob?58:96,W*(mob?.16:.085)),er=mob?3:5,
-        l1=$('.about__head .ln>span'),sg=$('.ornw--sig .orn'),ov=$('.work .orn'),wl=$$('.work .h2 .ln>span');
-      if(!(l1&&sg&&ov&&wl.length))return;
+        l1=$('.about__head .ln>span'),sg=$('.ornw--sig .orn'),ov=$('.work .orn'),wl=$$('.work .h2 .ln>span'),rl=$('.work .rule');
+      if(!(l1&&sg&&ov&&wl.length&&rl))return;var rr=rc(rl);RL={el:rl,l:rr.l,r:rr.r,y:rr.t,x:0};
       var r1=rc(l1),rs=rc(sg),ro=rc(ov),rw=rc(wl[wl.length-1]),yA=(r1.t+r1.b)/2,ySig=(rs.t+rs.b)/2,xs=(rs.l+rs.r)/2,xo=(ro.l+ro.r)/2,yo=(ro.t+ro.b)/2,yEnd=rw.b+4;
       // 1) hero boyunca: yer yoksa sağ kenar, sağda boşluk varsa sabit mesafe içeri
       $$('.hero h1 .ln>span,.slides').forEach(function(el){var r=rc(el);obs.push([r.l,r.t,r.r,r.b])});
@@ -408,11 +408,11 @@ section{position:relative}
       bez([edgeL,yC],[edgeL,ySig+12],[edgeL+(xs-edgeL)*.45,ySig+28],[xs,ySig]);
       bez([xs,ySig],[xs+(edgeR-xs)*.9,ySig+(yo-ySig)*.25],[xo+(xs-xo)*.35,yo-(yo-ySig)*.45],[xo,yo]);
       bez([xo,yo],[xo-Math.min(60,(xs-xo)*.2),yo+(yo-ySig)*.27],[xo,yo+(yH-yo)*.45],[xo,yH]);
-      for(yy=yH+6;yy<yEnd;yy+=6)V2.push([xo+Math.sin((yy-yH)/38)*(mob?2:4),yy]);
+      var yImp=RL.y-dh*.92;RL.x=xo;for(yy=yH+6;yy<yImp;yy+=6)V2.push([xo+Math.sin((yy-yH)/46)*(mob?2:4)*Math.min(1,(yImp-yy)/60),yy]);
       PX=[];PY=[];var carry=0;
       for(i=1;i<V2.length;i++){var ax=V2[i-1][0],ay=V2[i-1][1],bx=V2[i][0],by=V2[i][1],L=Math.hypot(bx-ax,by-ay);if(L<.01)continue;
         for(q=carry;q<L;q+=SP){PX.push(ax+(bx-ax)*q/L);PY.push(ay+(by-ay)*q/L)}carry=q-L}
-      PX.push(V2[V2.length-1][0]);PY.push(yEnd);PX=sm(PX,3);PY=sm(PY,3);var N=PX.length;
+      PX.push(xo);PY.push(yImp);PX=sm(PX,3);PY=sm(PY,3);var N=PX.length;
       PK=sm(PX.map(function(x){return Math.abs(x-edgeL)<7||Math.abs(x-edgeR)<10?.62:1}),8);
       // 3) kaydırma eşlemesi
       var hc=Math.min(.45,.3*vh/W);S=[0];
@@ -422,8 +422,9 @@ section{position:relative}
       function hit(r){for(var i=0;i<N;i++){var x=PX[i],y=PY[i];if(y<r.t-th||y>r.b+th)continue;var ex=Math.max(r.l-x,0,x-r.r),ey=Math.max(r.t-y,0,y-r.b);if(ex*ex+ey*ey<th*th)return i}return -1}
       $$(LN).forEach(function(line){var cs=$$('.ch',line).filter(function(c){return c.parentElement===line}),R=cs.map(rc),U=R.map(hit),any=U.some(function(u){return u>=0});
         cs.forEach(function(c,n){var u=U[n];if(u<0&&any){u=1e9;U.forEach(function(ut,m){if(ut>=0)u=Math.min(u,ut+Math.abs((R[n].l+R[n].r)/2-(R[m].l+R[m].r)/2)/SP*.9)})}TG.push({el:c,u:u})})});
+      $$('.work__lead>.ch').forEach(function(c){TG.push({el:c,u:hit(rc(c))})});
       [sg,ov].forEach(function(el){var r=rc(el),w=(r.r-r.l)*.18,h=(r.b-r.t)*.18;TG.push({el:el,u:hit({l:r.l+w,r:r.r-w,t:r.t+h,b:r.b-h})})});
-      dpr=Math.min(2,devicePixelRatio||1);tr.width=Math.round(innerWidth*dpr);tr.height=Math.round(vh*dpr);P=[];B=[];lf=-1;f=-1;lui=-9;d.classList.add('on');kick()}
+      DW=dw;imp=0;rl.style.opacity='';dpr=Math.min(2,devicePixelRatio||1);tr.width=Math.round(innerWidth*dpr);tr.height=Math.round(vh*dpr);P=[];B=[];lf=-1;f=-1;lui=-9;d.classList.add('on');kick()}
     function tick(){raf=0;var N=PX.length;if(N<2)return;var sc=scrollY,t,dy=sc-ly;ly=sc;
       if(sc>=S[N-1])t=N-1;else{var lo=0,hi=N-1;while(hi-lo>1){var md=(lo+hi)>>1;if(S[md]<=sc)lo=md;else hi=md}t=lo+(sc-S[lo])/(S[hi]-S[lo]||1)}
       if(f<0)f=t;f+=(t-f)*.2;if(Math.abs(t-f)<.03)f=t;
@@ -439,10 +440,23 @@ section{position:relative}
         P.push([x,y,now,k]);lf=f}
       while(P.length&&now-P[0][2]>LIFE)P.shift();
       cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,innerWidth,innerHeight);cx.lineCap='butt';
-      for(var pass=0;pass<2;pass++)for(i=1;i<P.length;i++){var a=P[i-1],b=P[i];if(Math.hypot(a[0]-b[0],a[1]-b[1])>SP*4)continue;var py=b[1]-sc;if(py<-40||py>innerHeight+40)continue;
-        var u=1-(now-b[2])/LIFE;if(u<=0)continue;var e=u*u*(3-2*u);
-        cx.strokeStyle='rgba(88,168,146,'+(pass?(.75*e):(.16*e)).toFixed(3)+')';cx.lineWidth=(pass?.6+2.2*e:3+9*e)*b[3];
-        cx.beginPath();cx.moveTo(a[0],a[1]-sc);cx.lineTo(b[0],py);cx.stroke()}
+      // su izi: damlanın yarısı genişliğinde ıslak şerit, yaşlandıkça daralıp kurur; kenarında ince bir ışık yansıması
+      for(var pass=0;pass<2;pass++)for(i=1;i<P.length;i++){var a=P[i-1],b=P[i],sl=Math.hypot(a[0]-b[0],a[1]-b[1]);if(sl>SP*4||sl<.01)continue;var py=b[1]-sc;if(py<-40||py>innerHeight+40)continue;
+        var u=1-(now-b[2])/LIFE;if(u<=0)continue;var e=u*u*(3-2*u),bw=DW*.5*Math.pow(e,1.3)*b[3],ox=0,oy=0;
+        if(pass){ox=-(b[1]-a[1])/sl*bw*.24;oy=(b[0]-a[0])/sl*bw*.24;cx.strokeStyle='rgba(236,251,246,'+(.4*e).toFixed(3)+')';cx.lineWidth=Math.max(.5,bw*.13)}
+        else{cx.strokeStyle='rgba(120,190,172,'+(.2*e).toFixed(3)+')';cx.lineWidth=bw}
+        cx.beginPath();cx.moveTo(a[0]+ox,a[1]-sc+oy);cx.lineTo(b[0]+ox,py+oy);cx.stroke()}
+      // bitiş: damla "Dövme galerisi" çizgisine suya düşer gibi çarpar; çizgi dalgalanır, küçük bir sütun yükselip iki damlacık geri düşer
+      if(RL){var atEnd=f>=N-1.3;if(atEnd&&!imp)imp=now;if(!atEnd&&f<N-4&&imp){imp=0;RL.el.style.opacity=''}
+        if(imp){var tt=(now-imp)/1000;if(tt<3.2){busy=1;RL.el.style.opacity='0';var ly2=RL.y-sc,x0=RL.x,fr=300*tt;
+            cx.strokeStyle='rgba(244,245,248,.8)';cx.lineWidth=1;cx.beginPath();
+            for(var xx=RL.l;xx<=RL.r;xx+=3){var dd=Math.abs(xx-x0),env=dd<fr?Math.min(1,(fr-dd)/50):0,
+                yv=7*Math.exp(-tt/.85)*Math.exp(-dd/360)*env*Math.sin(dd*.098-tt*16.3)
+                  +(tt<.12?6*(1-tt/.12)*Math.exp(-dd*dd/200):0)-(tt<.6?24*Math.sin(Math.PI*tt/.6)*Math.exp(-dd*dd/70):0);
+              if(xx===RL.l)cx.moveTo(xx,ly2+yv);else cx.lineTo(xx,ly2+yv)}
+            cx.stroke();
+            [[-26,-200,2.1],[20,-150,1.5]].forEach(function(dp){var t2=tt-.2;if(t2<0)return;var hy=dp[1]*t2+330*t2*t2;if(hy>0)return;cx.fillStyle='rgba(236,251,246,.85)';cx.beginPath();cx.arc(x0+dp[0]*t2,ly2+hy,dp[2],0,6.3);cx.fill()})}
+          else RL.el.style.opacity=''}}
       if(P.length)busy=1;
       if(busy||Math.abs(t-f)>.03||Math.abs(s-1)>.004||Math.abs(v)>.004)raf=requestAnimationFrame(tick)}
     function kick(){if(!raf)raf=requestAnimationFrame(tick)}
