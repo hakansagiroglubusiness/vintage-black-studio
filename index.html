@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vintage Black Studio</title>
 <meta name="description" content="Vintage Black Studio — Bursa, Nilüfer'de dövme stüdyosu. Kaderini seç: iki kapıdan birinden geç.">
+<link rel="preload" as="image" href="gates/land.webp" media="(min-aspect-ratio: 21/20)" fetchpriority="high">
+<link rel="preload" as="image" href="gates/port.webp" media="(max-aspect-ratio: 21/20)" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&family=Manufacturing+Consent&display=swap" rel="stylesheet">
@@ -63,7 +65,6 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
 .hl #dR span,.hr #dL span{opacity:.35}
 .hint{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.6;pointer-events:none;text-shadow:0 2px 14px #000}
 @media(max-width:700px){.hint{display:none}.door u{display:none}}
-@media(prefers-reduced-motion:reduce){.rays,.glow--e{animation:none}}
 </style>
 </head>
 <body>
@@ -82,14 +83,29 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
 </div>
 <canvas id="smoke" aria-hidden="true"></canvas>
 
+<script>/* dil: Türkçe / İngilizce. Seçim tarayıcıda saklanır ve üç sayfada ortaktır; kayıt yoksa tarayıcı diline bakılır */
+(function(){var L;try{L=localStorage.getItem('vbs-lang')}catch(e){}
+if(L!=='tr'&&L!=='en')L=/^tr/i.test(navigator.language||'tr')?'tr':'en';window.__lang=L;
+var H=[],T={"KADERİNİ": "CHOOSE", "SEÇ": "YOUR FATE", "Kaderini seç": "Choose your fate", "KAPI I": "GATE I", "KAPI II": "GATE II", "CENNET": "HEAVEN", "CEHENNEM": "HELL", "İçeri gir": "Enter", "Bir kapı seç": "Choose a gate", "Gustave Doré tarzında bir gravür: solda ışık saçan cennet kapısı ve melekler, sağda alevler içinde cehennem ağzı ve iblisler; önde yol ayrımında duran cübbeli yolcular.": "An engraving in the manner of Gustave Doré: on the left the radiant gate of heaven with angels, on the right the flaming mouth of hell with demons; robed travellers stand at the fork in the road.", "__desc": "Vintage Black Studio — a tattoo studio in Nilüfer, Bursa. Choose your fate: step through one of two gates."};
+if(L==='en'){document.documentElement.lang='en';
+  H.forEach(function(h){[].forEach.call(document.querySelectorAll(h[0]),function(e){e.innerHTML=h[1]})});
+  var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){var k=n.nodeValue.trim();if(k&&T[k]!=null)n.nodeValue=n.nodeValue.replace(k,T[k])}
+  [].forEach.call(document.querySelectorAll('[aria-label],[alt]'),function(e){['aria-label','alt'].forEach(function(a){var v=e.getAttribute(a);if(v&&T[v]!=null)e.setAttribute(a,T[v])})});
+  var md=document.querySelector('meta[name=description]');if(md&&T.__desc)md.setAttribute('content',T.__desc)}
+var st=document.createElement('style');st.textContent=".lang span{opacity:.5}.lang .on{opacity:1;text-decoration:underline;text-underline-offset:.32em}.lang i{font-style:normal;opacity:.4;margin:0 .35em}.lang{position:absolute;right:var(--g);top:22px;font:500 12px/1 var(--mono);letter-spacing:.06em;cursor:pointer;padding:8px 6px;text-shadow:0 2px 14px #000}";document.head.appendChild(st);
+var b=document.createElement("span");b.className='lang';b.setAttribute('role','button');b.setAttribute('tabindex','0');b.setAttribute('aria-label',L==='en'?'Türkçe':'English');b.setAttribute('lang',L==='en'?'tr':'en');
+b.innerHTML='<span'+(L==='tr'?' class="on"':'')+'>TR</span><i>/</i><span'+(L==='en'?' class="on"':'')+'>EN</span>';
+function sw(e){e.preventDefault();e.stopPropagation();try{localStorage.setItem('vbs-lang',L==='en'?'tr':'en')}catch(x){}location.reload()}
+b.addEventListener('click',sw);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')sw(e)});
+document.querySelector('.ui').appendChild(b);})();</script>
 <script>
 (function(){
   // Görsel ölçüleri ve kapıların görsel içindeki yeri (0-1). h_: cennet, e_: cehennem; üçüncü değer yarıçap (yüksekliğe oranla)
-  var ART={land:{src:'gates/land.jpg',hi:'gates/land-4k.jpg',w:2016,h:1129,h_:[.14,.27,.085],e_:[.84,.44,.1],m_:[.52,.455],Z:7},
-           port:{src:'gates/port.jpg',hi:'gates/port-4k.jpg',w:1128,h:2014,h_:[.23,.43,.075],e_:[.76,.55,.085],m_:[.5,.3],Z:4.6}};
+  var ART={land:{src:'gates/land.webp',hi:'gates/land-4k.webp',w:1920,h:1075,h_:[.14,.27,.085],e_:[.84,.44,.1],m_:[.52,.455],Z:7},
+           port:{src:'gates/port.webp',hi:'gates/port-4k.webp',w:1080,h:1928,h_:[.23,.43,.075],e_:[.76,.55,.085],m_:[.5,.3],Z:4.6}};
   var body=document.body,root=document.documentElement,zoom=document.getElementById('zoom'),par=document.getElementById('par'),art=document.getElementById('art'),
       sm=document.getElementById('smoke'),sx=sm.getContext('2d'),dL=document.getElementById('dL'),dR=document.getElementById('dR'),fx=document.getElementById('fx'),cx=fx.getContext('2d'),
-      red=matchMedia('(prefers-reduced-motion:reduce)').matches,cur=null,G={},B={},gz=null,going=0,hov=-1,mx=0,my=0,tx=0,ty=0,P=[],last=0;
+      red=false,cur=null,G={},B={},gz=null,going=0,hov=-1,mx=0,my=0,tx=0,ty=0,P=[],last=0;
 
   // yerleşim: görsel ekranı kaplar; z>1 iken (cx,cy) noktası sabit kalacak şekilde büyütülür.
   // Büyütme ölçek dönüşümüyle değil boyutla yapılır: tarayıcı her karede kaynaktan yeniden çizer, görüntü bozulmaz.
@@ -102,7 +118,7 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
     var s=Math.max(W/a.w,H/a.h),dw=a.w*s,dh=a.h*s;B={ox:(W-dw)/2,oy:(H-dh)/2,dw:dw,dh:dh,W:W,H:H};apply(1,W/2,H/2);
     var d=Math.min(devicePixelRatio||1,1.5);fx.width=Math.round(W*d);fx.height=Math.round(H*d);cx.setTransform(d,0,0,d,0,0);sm.width=W;sm.height=H}
   // yüksek çözünürlüklü görsel arkadan yüklenir, hazır olunca yerine geçer (yakınlaşmada netlik için)
-  function hires(a){setTimeout(function(){var im=new Image();im.onload=function(){if(cur===a&&!going)art.src=im.src};im.src=a.hi},700)}
+  function hires(a){var cn=navigator.connection;if(cn&&(cn.saveData||/2g|3g/.test(cn.effectiveType||'')))return;setTimeout(function(){var im=new Image();im.onload=function(){if(cur===a&&!going)art.src=im.src};im.src=a.hi},700)}
   // parçacıklar: cehennemden yükselen korlar, cennete süzülen ışık zerreleri
   function spawn(ember){var r=ember?G.er:G.hr,x0=ember?G.ex:G.hx,y0=ember?G.ey:G.hy;
     P.push(ember?{e:1,x:x0+(Math.random()-.5)*r*1.6,y:y0+r*(.2+Math.random()*.6),vx:(Math.random()-.5)*14,vy:-(24+Math.random()*46),l:0,L:1.6+Math.random()*2.2,s:.8+Math.random()*1.7}
@@ -141,7 +157,10 @@ body{margin:0;background:var(--black);color:var(--cream);overflow:hidden;font-fa
   addEventListener('resize',layout);
   addEventListener('pageshow',function(e){if(!e.persisted)return;going=0;gz=null;setHov(-1);body.classList.remove('go');sx.clearRect(0,0,sm.width,sm.height);layout()});
   layout();
-  function ready(){if(body.classList.contains('rdy'))return;body.classList.add('rdy')}
+  function ready(){if(body.classList.contains('rdy'))return;body.classList.add('rdy');if(matchMedia('(hover:none)').matches)setTimeout(cycle,900)}
+  // dokunmatik ekranda üzerine gelme yok: sahne kendi kendine canlanır, sırayla cennet ve cehennem aydınlanır
+  var cyc=[[0,2800],[-1,600],[1,2800],[-1,600]],ci=0;
+  function cycle(){if(going)return;var c=cyc[ci++%cyc.length];setHov(c[0]);setTimeout(cycle,c[1])}
   if(art.complete&&art.naturalWidth)ready();else{art.addEventListener('load',ready);art.addEventListener('error',ready);setTimeout(ready,2500)}
   requestAnimationFrame(frame);
 })();

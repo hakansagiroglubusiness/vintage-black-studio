@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vintage Black Studio — Tipografik Prototip</title>
+<title>Vintage Black Studio</title>
+<link rel="preload" as="image" href="img/07683ad6.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manufacturing+Consent&display=swap" rel="stylesheet">
@@ -225,7 +226,7 @@ section{position:relative}
 </head>
 <body>
 <script>/* kapıdan geçiş: ana sayfadaki kapılardan gelindiyse ekran, kapının renginden yumuşakça açılır */
-(function(){try{var g=sessionStorage.getItem('vbs-gate');if(!g)return;sessionStorage.removeItem('vbs-gate');if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+(function(){try{var g=sessionStorage.getItem('vbs-gate');if(!g)return;sessionStorage.removeItem('vbs-gate');
 var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:1;transition:opacity 1.1s ease-out;background:'+(g==='cennet'?'#F4F5F8':'#000');document.body.appendChild(o);
 requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTimeout(function(){o.remove()},1250)},160)})}catch(e){}})();</script>
 
@@ -262,7 +263,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
       <div class="rule" style="padding:0"></div>
       <div class="mono" lang="en"><span>Tattoo Studio</span><span>Est. 2022</span><span lang="tr">Bursa / Türkiye</span></div>
     </div>
-    <div class="slides" id="slides" aria-hidden="true"><div class="im on"><img src="img/07683ad6.jpg" alt=""></div><div class="im"><img src="img/6c67fe5c.jpg" alt=""></div><div class="im"><img src="img/4dd2c0a7.jpg" alt=""></div><div class="im"><img src="img/fa21341e.jpg" alt=""></div><div class="im"><img src="img/286c8c8f.jpg" alt=""></div></div>
+    <div class="slides" id="slides" aria-hidden="true"><div class="im on"><img src="img/07683ad6.jpg" alt="" fetchpriority="high" decoding="async"></div><div class="im"><img data-src="img/6c67fe5c.jpg" alt="" decoding="async"></div><div class="im"><img data-src="img/4dd2c0a7.jpg" alt="" decoding="async"></div><div class="im"><img data-src="img/fa21341e.jpg" alt="" decoding="async"></div><div class="im"><img data-src="img/286c8c8f.jpg" alt="" decoding="async"></div></div>
   </section>
 
   <section class="sec" id="hakkinda">
@@ -270,7 +271,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
       <span class="ln"><span>S<span class="alt">T</span>ÜDYO<span class="num">(01)</span></span></span>
       <span class="ln" style="--d:1"><span>HAKKINDA</span></span>
     </h2>
-    <figure class="about__img im c rv"><img src="img/5d966d7e.jpg" alt="Yeşil duvarlı stüdyoda sırtında omurga boyunca dövme olan bir misafir" style="object-position:50% 38%"></figure>
+    <figure class="about__img im c rv"><img src="img/5d966d7e.jpg" loading="lazy" decoding="async" alt="Yeşil duvarlı stüdyoda sırtında omurga boyunca dövme olan bir misafir" style="object-position:50% 38%"></figure>
     <p class="about__cap mono" lang="en">Vintage Black Studio</p>
     <div class="about__txt">
       <p class="fade rv">Vintage Black Studio, 2022'de kurulan bir dövme stüdyosu. Ağırlık siyah mürekkepte: iri ve akışkan <a class="ul" href="#isler">blackwork</a> parçalar, omurga boyunca inen ince <a class="ul" href="#isler">ornamental</a> işler, fırça darbesi ve noktalama ile kurulan <a class="ul" href="#isler">brush &amp; dot</a> çalışmalar.</p>
@@ -311,7 +312,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
       <div><dt>E-posta</dt><dd><a class="ul" href="mailto:miraulgul@gmail.com" lang="en">miraulgul@gmail.com</a></dd></div>
       <div><dt>Adres</dt><dd style="font-size:clamp(18px,1.5vw,24px);max-width:30ch;margin-inline:auto">Time Özlüce Binası, 29 Ekim Mah., Muammer Aksoy Cd. No: 83, Nilüfer / Bursa</dd></div>
     </dl>
-    <div class="arch rv"><div class="im"><img src="img/ccd1d929.jpg" alt="Omurga boyunca ince işli dövme; arkada Vintage Black Studio ayna tabelası"></div></div>
+    <div class="arch rv"><div class="im"><img src="img/ccd1d929.jpg" loading="lazy" decoding="async" alt="Omurga boyunca ince işli dövme; arkada Vintage Black Studio ayna tabelası"></div></div>
   </section>
 
   <footer class="foot mono">
@@ -329,6 +330,21 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
   <div class="gal__grid" id="galGrid"></div>
 </div>
 
+<script>/* dil: Türkçe / İngilizce. Seçim tarayıcıda saklanır ve üç sayfada ortaktır; kayıt yoksa tarayıcı diline bakılır */
+(function(){var L;try{L=localStorage.getItem('vbs-lang')}catch(e){}
+if(L!=='tr'&&L!=='en')L=/^tr/i.test(navigator.language||'tr')?'tr':'en';window.__lang=L;
+var H=[[".panel nav a[href=\"#iletisim\"]>span", "Contac<span class=\"alt\">T</span><sup>03</sup>"], [".about__head .ln:nth-child(1)>span", "ABOU<span class=\"alt\">T</span><span class=\"num\">(01)</span>"], [".about__head .ln:nth-child(2)>span", "THE STUDIO"], [".about__txt p:nth-child(1)", "Vintage Black Studio is a tattoo studio founded in 2022. The focus is black ink: bold, flowing <a class=\"ul\" href=\"#isler\">blackwork</a> pieces, fine <a class=\"ul\" href=\"#isler\">ornamental</a> work running down the spine, and <a class=\"ul\" href=\"#isler\">brush &amp; dot</a> pieces built from brushstrokes and dotwork."], [".cta .mono", "<a class=\"ul\" href=\"#iletisim\">Write</a> and book your appointment"], [".work .h2 .ln:nth-child(1)>span", "SELECTED<span class=\"num\">(02)</span>"], [".work .h2 .ln:nth-child(2)>span", "WO<span class=\"alt\">R</span>KS"]],T={"Kapat": "Close", "Giriş": "Home", "Hakkında": "About", "İşler": "Works", "Bursa / Türkiye": "Bursa / Turkey", "Tek kişilik bir stüdyo: ilk eskizden son çizgiye kadar her iş aynı elden çıkar. Her tasarım, taşıyacağı bedene göre çizilir. Kalçadan dize uzanan bir çizgi, sırtı kaplayan simetrik bir desen ya da kolun kıvrımını izleyen bir fırça izi; desen bedenin hareketini takip eder. Bazı işlerde tasarım doğrudan ten üzerine fırçayla çizilerek başlar.": "A one-person studio: every piece comes from the same hand, from the first sketch to the last line. Each design is drawn for the body that will carry it. A line running from hip to knee, a symmetrical pattern across the back, or a brush mark following the curve of an arm; the design follows the movement of the body. Some pieces begin with the design brushed directly onto the skin.", "Stüdyo Bursa, Nilüfer'de: 29 Ekim Mahallesi, Muammer Aksoy Caddesi No: 83, Time Özlüce Binası.": "The studio is in Nilüfer, Bursa: 29 Ekim Mahallesi, Muammer Aksoy Caddesi No: 83, Time Özlüce Building.", "Dövme yaptırmak mı istiyorsun?": "Thinking about a tattoo?", "Stüdyodan çıkan işlerden bir seçki. Kategoriye dokun, tamamını gör.": "A selection of work from the studio. Tap a category to see it all.", "Dövme galerisi": "Tattoo gallery", "Görmek için dokun": "Tap to view", "İLETİŞİM": "CONTACT", "Aklında bir dövme mi var? Birlikte tasarlayalım.": "Have a tattoo in mind? Let's design it together.", "Sen": "About you", "Adın, yaşın, yaşadığın şehir ve varsa Instagram profilin.": "Your name, age, location and Instagram profile (if any).", "Fikrin": "Your idea", "Konseptini, dövmeyi istediğin bölgeyi ve yaklaşık boyutu anlat. Fikrinin arkasındaki anlamı ya da ilhamı da paylaşabilirsin.": "Describe your concept, preferred placement and approximate size. Feel free to share the meaning or inspiration behind your idea.", "Referanslar": "References", "Aklındakini anlatmaya yardımcı olacak referans görselleri, eskizleri, dokuları ya da metinleri ekle.": "Attach any reference images, sketches, textures, texts or visuals that help communicate your vision.", "Uygunluk": "Availability", "Tercih ettiğin tarihleri yaz. İstanbul ya da Bursa'ya mı geleceğini, yoksa başka bir şehirde misafir seans mı düşündüğünü belirt.": "Let me know your preferred dates and whether you will be visiting Istanbul or Bursa, Turkey, or planning a guest session in another location.", "Süreç": "The process", "Her talep tek tek incelenir. Fikrin stüdyonun işleriyle örtüşüyorsa tasarım, fiyat ve uygun tarihler e-posta üzerinden konuşulur.": "Every inquiry is reviewed individually. If your idea aligns with the studio's work, we will discuss the design, pricing and available dates via email.", "Kapora ve onay": "Deposit & confirmation", "Detaylarda anlaşıldıktan sonra randevuyu kesinleştirmek için iadesiz bir kapora alınır. Kalan tutar seans günü ödenir.": "Once the details are agreed on, a non-refundable deposit is required to secure your appointment. The remaining balance is paid on the day of your session.", "Randevu, fiyat ve tasarım soruları için yaz:": "For bookings, pricing and design questions, write to:", "E-posta": "E-mail", "Adres": "Address", "Time Özlüce Binası, 29 Ekim Mah., Muammer Aksoy Cd. No: 83, Nilüfer / Bursa": "Time Özlüce Building, 29 Ekim Mah., Muammer Aksoy Cd. No: 83, Nilüfer / Bursa, Turkey", "Başa dön": "Back to top", "Geri": "Back", "Vintage Black Studio — başa dön": "Vintage Black Studio — back to top", "Menü": "Menu", "Yeşil duvarlı stüdyoda sırtında omurga boyunca dövme olan bir misafir": "A guest in the green-walled studio with a tattoo running down the spine", "Omurga boyunca ince işli dövme; arkada Vintage Black Studio ayna tabelası": "Fine ornamental tattoo along the spine; the Vintage Black Studio mirror sign behind"};
+if(L==='en'){document.documentElement.lang='en';
+  H.forEach(function(h){[].forEach.call(document.querySelectorAll(h[0]),function(e){e.innerHTML=h[1]})});
+  var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){var k=n.nodeValue.trim();if(k&&T[k]!=null)n.nodeValue=n.nodeValue.replace(k,T[k])}
+  [].forEach.call(document.querySelectorAll('[aria-label],[alt]'),function(e){['aria-label','alt'].forEach(function(a){var v=e.getAttribute(a);if(v&&T[v]!=null)e.setAttribute(a,T[v])})});
+  var md=document.querySelector('meta[name=description]');if(md&&T.__desc)md.setAttribute('content',T.__desc)}
+var st=document.createElement('style');st.textContent=".lang span{opacity:.5}.lang .on{opacity:1;text-decoration:underline;text-underline-offset:.32em}.lang i{font-style:normal;opacity:.4;margin:0 .35em}.lang{position:fixed;top:calc(12px + var(--logo)/2);right:calc(var(--g) + 84px);transform:translateY(-50%);z-index:60;mix-blend-mode:difference;color:#fff;font:500 12px/1 var(--mono);letter-spacing:.06em;cursor:pointer;padding:8px 6px}";document.head.appendChild(st);
+var b=document.createElement("span");b.className='lang';b.setAttribute('role','button');b.setAttribute('tabindex','0');b.setAttribute('aria-label',L==='en'?'Türkçe':'English');b.setAttribute('lang',L==='en'?'tr':'en');
+b.innerHTML='<span'+(L==='tr'?' class="on"':'')+'>TR</span><i>/</i><span'+(L==='en'?' class="on"':'')+'>EN</span>';
+function sw(e){e.preventDefault();e.stopPropagation();try{localStorage.setItem('vbs-lang',L==='en'?'tr':'en')}catch(x){}location.reload()}
+b.addEventListener('click',sw);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')sw(e)});
+document.body.appendChild(b);})();</script>
 <script>
 (function(){
   var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
@@ -349,7 +365,9 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
 
   // 4 — hero crossfade
   var sl=$$('#slides>div'),si=0;
-  setInterval(function(){sl[si].classList.remove('on');si=(si+1)%sl.length;sl[si].classList.add('on')},2600);
+  // diğer açılış görselleri sayfa yüklendikten sonra gelir (ilk boyamayı geciktirmesin)
+  addEventListener('load',function(){setTimeout(function(){$$('#slides img[data-src]').forEach(function(i){i.src=i.dataset.src})},400)});
+  setInterval(function(){var nx=(si+1)%sl.length,im=$('img',sl[nx]);if(im&&!(im.complete&&im.naturalWidth))return;sl[si].classList.remove('on');si=nx;sl[si].classList.add('on')},2600);
 
   // 8 — menü
   var body=document.body,mb=$('#menuBtn');
@@ -364,7 +382,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
   var ratios=['3/4','4/5','2/3','1/1','3/4','5/7'];
   function openGal(btn){last=btn;var a=CATS[btn.dataset.cat],h='';
     $('#galTitle').textContent=btn.dataset.cat;$('#galCount').textContent='';
-    for(var i=0;i<a.length;i++)h+='<div class="im"><img src="img/'+a[i]+'.jpg" alt="'+btn.dataset.cat+' dövme '+pad(i+1)+'" loading="lazy"></div>';
+    for(var i=0;i<a.length;i++)h+='<div class="im"><img src="img/'+a[i]+'.jpg" alt="'+btn.dataset.cat+(window.__lang==='en'?' tattoo ':' dövme ')+pad(i+1)+'" loading="lazy"></div>';
     grid.innerHTML=h;gal.scrollTop=0;gal.classList.add('open');body.style.overflow='hidden';
     $$('.im',grid).forEach(function(p){gio.observe(p)});$('#galClose').focus()}
   function closeGal(){gal.classList.remove('open');body.style.overflow='';if(last)last.focus({preventScroll:true})}

@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vintage Black Studio</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" as="fetch" href="statue-1k.glb" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=UnifrakturCook:wght@700&family=Archivo:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -210,17 +213,11 @@ h1,h2,h3,p{margin:0}
   .hero__mid .cap{max-width:none}
   .hero__mid .cap br{display:none}
 }
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  .emblem{--ry:0deg;--rx:0deg;--sc:.8;--draw:1}
-  .state__txt .w{opacity:1}
-  .photo{--clip:0%;--zoom:1}
-}
 </style>
 </head>
 <body>
 <script>/* kapıdan geçiş: ana sayfadaki kapılardan gelindiyse ekran, kapının renginden yumuşakça açılır */
-(function(){try{var g=sessionStorage.getItem('vbs-gate');if(!g)return;sessionStorage.removeItem('vbs-gate');if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+(function(){try{var g=sessionStorage.getItem('vbs-gate');if(!g)return;sessionStorage.removeItem('vbs-gate');
 var o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:1;transition:opacity 1.1s ease-out;background:'+(g==='cennet'?'#F4F5F8':'#000');document.body.appendChild(o);
 requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTimeout(function(){o.remove()},1250)},160)})}catch(e){}})();</script>
 
@@ -228,7 +225,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
 <canvas id="smoke" aria-hidden="true"></canvas>
 
 <header class="nav cap" id="nav">
-  <a class="nav__brand" href="#top"><b lang="en">Vintage Black Studio</b><span id="clock">--:--</span> <span>TR</span></a>
+  <a class="nav__brand" href="#top"><b lang="en">Vintage Black Studio</b><span id="clock">--:--</span> <span id="langslot"></span></a>
   <nav class="nav__links" aria-label="Bölümler">
     <a href="#hakkinda">Hakkında</a><a href="#portfolyo">Portfolyo</a><a href="#instagram">Instagram</a>
   </nav>
@@ -297,11 +294,26 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
   <div class="foot__base"><span lang="en">© Vintage Black Studio</span><span>Est. 2022</span></div>
 </footer>
 
+<script>/* dil: Türkçe / İngilizce. Seçim tarayıcıda saklanır ve üç sayfada ortaktır; kayıt yoksa tarayıcı diline bakılır */
+(function(){var L;try{L=localStorage.getItem('vbs-lang')}catch(e){}
+if(L!=='tr'&&L!=='en')L=/^tr/i.test(navigator.language||'tr')?'tr':'en';window.__lang=L;
+var H=[["#hakkinda .blk:nth-of-type(1) .lead", "Vintage Black is a tattoo studio and atelier founded in 2022. A room of green walls, gilded frames and <i>hand-drawn flash</i>."], ["#hakkinda .blk:nth-of-type(2) .lead", "Tattooing is only part of the work here. <i>Atelier &amp; More</i>: drawing, design and the studio's own pieces share the same table."]],T={"Hakkında": "About", "Portfolyo": "Portfolio", "Randevu al ↗": "Book ↗", "Randevu al": "Book now", "Atölye": "Atelier", "Tümü": "All", "Bölümler": "Sections", "Instagram DM ya da e-posta": "Instagram DM or e-mail", "Kapat ✕": "Close ✕", "Dövme görseli": "Tattoo image", "Başa dön ↑": "Back to top ↑", "Blackwork dövme": "Blackwork tattoo", "Ornamental dövme": "Ornamental tattoo", "Brush & Dot dövme": "Brush & Dot tattoo"};
+if(L==='en'){document.documentElement.lang='en';
+  H.forEach(function(h){[].forEach.call(document.querySelectorAll(h[0]),function(e){e.innerHTML=h[1]})});
+  var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){var k=n.nodeValue.trim();if(k&&T[k]!=null)n.nodeValue=n.nodeValue.replace(k,T[k])}
+  [].forEach.call(document.querySelectorAll('[aria-label],[alt]'),function(e){['aria-label','alt'].forEach(function(a){var v=e.getAttribute(a);if(v&&T[v]!=null)e.setAttribute(a,T[v])})});
+  var md=document.querySelector('meta[name=description]');if(md&&T.__desc)md.setAttribute('content',T.__desc)}
+var st=document.createElement('style');st.textContent=".lang span{opacity:.5}.lang .on{opacity:1;text-decoration:underline;text-underline-offset:.32em}.lang i{font-style:normal;opacity:.4;margin:0 .35em}.lang{cursor:pointer;margin-left:.9em;display:inline-block}";document.head.appendChild(st);
+var b=document.createElement("span");b.className='lang';b.setAttribute('role','button');b.setAttribute('tabindex','0');b.setAttribute('aria-label',L==='en'?'Türkçe':'English');b.setAttribute('lang',L==='en'?'tr':'en');
+b.innerHTML='<span'+(L==='tr'?' class="on"':'')+'>TR</span><i>/</i><span'+(L==='en'?' class="on"':'')+'>EN</span>';
+function sw(e){e.preventDefault();e.stopPropagation();try{localStorage.setItem('vbs-lang',L==='en'?'tr':'en')}catch(x){}location.reload()}
+b.addEventListener('click',sw);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')sw(e)});
+document.getElementById('langslot').appendChild(b);})();</script>
 <script>
 (()=>{
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
   const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce=false;
 
   // saat
   const clock=$('#clock'), fmt=new Intl.DateTimeFormat('tr-TR',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
@@ -447,7 +459,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
       const hid=document.createElement('div'); hid.hidden=true; figs.forEach(g=>{if(g.hidden) hid.appendChild(g)}); frag.appendChild(hid);
       grid.textContent=''; grid.appendChild(frag); grid.style.height=Math.round(Math.max(...cols.map(c=>c.h)))+'px';
     };
-    const apply=f=>{let n=0; curF=f; figs.forEach(g=>{const on=f==='*'||g.dataset.cat===f; g.hidden=!on; if(on)n++}); cnt.textContent=n+' iş';
+    const apply=f=>{let n=0; curF=f; figs.forEach(g=>{const on=f==='*'||g.dataset.cat===f; g.hidden=!on; if(on)n++}); cnt.textContent=n+(window.__lang==='en'?(n===1?' piece':' pieces'):' iş');
       btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===f)); layout()};
     addEventListener('resize',layout);
     btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.f))); apply('*');
@@ -469,7 +481,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
 (()=>{
   if(!window.THREE||!THREE.GLTFLoader) return;
   const canvas=document.getElementById('bust'), pin=canvas.parentElement, scene3=document.getElementById('scene');
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce=false;
   let renderer;
   try{renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true})}catch(e){return}
   renderer.outputEncoding=THREE.sRGBEncoding;
@@ -492,7 +504,7 @@ requestAnimationFrame(function(){setTimeout(function(){o.style.opacity=0;setTime
     m.position.z=front?1.3+Math.random()*.4:-.7-Math.random()*1.4; m.rotation.z=Math.random()*6.28; m.renderOrder=front?3:0; scene.add(m); smoke.push(m)}
 
   const hiRes=Math.min(devicePixelRatio||1,2)*Math.max(innerWidth,innerHeight)>=1700&&innerWidth>=900;
-  fetch(hiRes?'statue-4k.glb':'statue-2k.glb').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(ab=>new THREE.GLTFLoader().parse(ab,'',g=>{
+  fetch('statue-1k.glb').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(ab=>new THREE.GLTFLoader().parse(ab,'',g=>{
     const m=g.scene, box=new THREE.Box3().setFromObject(m), size=box.getSize(new THREE.Vector3()), c=box.getCenter(new THREE.Vector3());
     const s=2.5/size.y; m.scale.setScalar(s); m.position.set(-c.x*s,-c.y*s,-c.z*s);
     wr=Math.max(size.x,size.z)/size.y;                     // genişlik/yükseklik: dar ekranda sığdırmak için
@@ -522,6 +534,11 @@ if(dz<th) discard;
 diffuseColor.rgb*=mix(1.,.55,smoothstep(th+.12,th,dz)*step(.001,uMelt)); // çözülen kenar koyulaşır`)};
       k.needsUpdate=true}});
     rig.add(m); document.documentElement.classList.add('has3d'); resize(); loop();
+    // heykel hafif dokuyla hemen görünür; yüksek çözünürlüklü doku arkadan gelip yerine geçer (masaüstü 4K, telefon 2K)
+    const cn=navigator.connection; if(!(cn&&(cn.saveData||/2g|3g/.test(cn.effectiveType||'')))) setTimeout(()=>{const tag=hiRes?'4k':'2k', TL=new THREE.TextureLoader(), an=renderer.capabilities.getMaxAnisotropy();
+      const up=(file,key,srgb)=>TL.load('tex/'+file+'-'+tag+'.jpg',t=>{t.flipY=false;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=an;if(srgb)t.encoding=THREE.sRGBEncoding;
+        m.traverse(o=>{if(o.isMesh&&o.material){const old=o.material[key];o.material[key]=t;if(old&&old!==t)old.dispose()}})});
+      up('d','map',true); up('n','normalMap',false)},600);
   },()=>{})).catch(()=>{});
 
   function resize(){
